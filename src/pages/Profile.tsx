@@ -13,8 +13,6 @@ import { Edit, Trophy, Target, Calendar, Star, User, Settings, Shield, Bell, Pal
 import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Edit3, MapPin, Users, MessageCircle, Share2, MoreHorizontal, ArrowUpRight, X, Award, Flame, CheckCircle } from 'lucide-react';
-import { useAchievements } from '@/hooks/useAchievements';
-import { useUserActivity } from '@/hooks/useUserActivity';
 
 const Profile = () => {
   const [activeSection, setActiveSection] = useState('profile');
@@ -33,8 +31,6 @@ const Profile = () => {
   const [bookTitle, setBookTitle] = useState('');
   const [bookContent, setBookContent] = useState('');
   const [isCreatingBook, setIsCreatingBook] = useState(false);
-  const { achievements, loading: achievementsLoading } = useAchievements();
-  const { activities, loading: activitiesLoading } = useUserActivity();
 
   const [userInfo, setUserInfo] = useState({
     name: 'Alex Rivera',
@@ -77,6 +73,28 @@ const Profile = () => {
     { label: 'XP Total', value: 2340, icon: '⭐' },
     { label: 'Nivel actual', value: 12, icon: '🏆' },
     { label: 'Actividades completadas', value: 287, icon: '✅' }
+  ];
+
+  const achievements = [
+    { name: 'Primera Semana', description: '7 días consecutivos', rarity: 'común', unlocked: true, icon: '🌟', position: { x: 20, y: 30 } },
+    { name: 'Meditador', description: '50 sesiones completadas', rarity: 'raro', unlocked: true, icon: '🧘‍♂️', position: { x: 40, y: 50 } },
+    { name: 'Atleta Mental', description: 'Nivel 10 alcanzado', rarity: 'épico', unlocked: true, icon: '🏆', position: { x: 60, y: 35 } },
+    { name: 'Maestro Zen', description: '100 días de mindfulness', rarity: 'legendario', unlocked: false, icon: '🍃', position: { x: 80, y: 45 } },
+    { name: 'Escritor', description: 'Crear 10 memorias', rarity: 'raro', unlocked: false, icon: '📝', position: { x: 30, y: 70 } },
+    { name: 'Sabio', description: 'Completar todos los módulos', rarity: 'legendario', unlocked: false, icon: '🦉', position: { x: 70, y: 65 } }
+  ];
+
+  const sidebarItems = [
+    { id: 'profile', label: 'Mi Perfil', icon: User },
+    { id: 'analytics', label: 'Análisis', icon: BarChart3 },
+    { id: 'achievements', label: 'Logros', icon: Trophy },
+    { id: 'memories', label: 'Memorias', icon: BookOpen },
+    { id: 'progress', label: 'Progreso', icon: Target },
+    { id: 'settings', label: 'Configuración', icon: Settings },
+    { id: 'privacy', label: 'Privacidad', icon: Shield },
+    { id: 'notifications', label: 'Notificaciones', icon: Bell },
+    { id: 'appearance', label: 'Apariencia', icon: Palette },
+    { id: 'help', label: 'Ayuda', icon: HelpCircle }
   ];
 
   const createNewBook = () => {
@@ -1080,29 +1098,76 @@ const Profile = () => {
     </Card>
   );
 
-  const sidebarItems = [
-    { id: 'profile', label: 'Mi Perfil', icon: User },
-    { id: 'analytics', label: 'Análisis', icon: BarChart3 },
-    { id: 'achievements', label: 'Logros', icon: Trophy },
-    { id: 'memories', label: 'Memorias', icon: BookOpen },
-    { id: 'progress', label: 'Progreso', icon: Target },
-    { id: 'settings', label: 'Configuración', icon: Settings },
-    { id: 'privacy', label: 'Privacidad', icon: Shield },
-    { id: 'notifications', label: 'Notificaciones', icon: Bell },
-    { id: 'appearance', label: 'Apariencia', icon: Palette },
-    { id: 'help', label: 'Ayuda', icon: HelpCircle }
-  ];
-
-  // Calcular XP total ganado
-  const totalXP = activities
-    .filter(activity => activity.activity_type === 'achievement_earned')
-    .reduce((sum, activity) => sum + (activity.metadata?.xp_earned || 0), 0);
-
   const renderContent = () => {
     switch (activeSection) {
       case 'profile':
         return (
           <div className="space-y-6">
+            {/* Profile Header */}
+            <Card className="p-8 bg-white dark:bg-gray-800 rounded-3xl border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg transition-colors duration-200">
+              <div className="flex flex-col md:flex-row items-center gap-6">
+                <div className="w-24 h-24 bg-vitalis-gold/20 dark:bg-gray-700 rounded-full flex items-center justify-center text-4xl">
+                  {userInfo.gender === 'mujer' ? '👩' : userInfo.gender === 'hombre' ? '👨' : '🌈'}
+                </div>
+                
+                <div className="flex-1 text-center md:text-left">
+                  {isEditing ? (
+                    <div className="space-y-4">
+                      <Input 
+                        value={userInfo.name} 
+                        onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
+                        className="text-xl font-bold dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                      />
+                      <Input 
+                        value={userInfo.email} 
+                        onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
+                        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                      />
+                      <Input 
+                        value={userInfo.university} 
+                        onChange={(e) => setUserInfo({...userInfo, university: e.target.value})}
+                        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                      />
+                    </div>
+                  ) : (
+                    <>
+                      <h1 className="text-3xl font-bold text-vitalis-brown dark:text-white mb-2">{userInfo.name}</h1>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-1">{userInfo.email}</p>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-1">{userInfo.university}</p>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-2">{userInfo.career} - {userInfo.semester}</p>
+                      <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
+                        <Badge className="bg-vitalis-gold/20 text-vitalis-brown dark:bg-gray-600 dark:text-gray-200">
+                          {userInfo.gender === 'mujer' ? 'Mujer' : userInfo.gender === 'hombre' ? 'Hombre' : 'No binario'}
+                        </Badge>
+                        <Badge className="bg-vitalis-green/20 text-vitalis-green dark:bg-green-800 dark:text-green-200">
+                          {userInfo.age} años
+                        </Badge>
+                      </div>
+                    </>
+                  )}
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={() => setIsEditing(!isEditing)}
+                    className="bg-vitalis-gold hover:bg-vitalis-gold-dark text-white rounded-2xl"
+                  >
+                    <Edit className="w-4 h-4 mr-2" />
+                    {isEditing ? 'Guardar' : 'Editar'}
+                  </Button>
+                  <Button 
+                    onClick={handleLogout}
+                    variant="outline"
+                    className="border-red-300 text-red-600 hover:bg-red-50 rounded-2xl"
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Cerrar sesión
+                  </Button>
+                </div>
+              </div>
+            </Card>
+
+            {/* Internal Profile Navigation */}
             <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg transition-colors duration-200">
               <div className="flex flex-wrap gap-2">
                 {sidebarItems.map((item) => {
@@ -1125,72 +1190,641 @@ const Profile = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-vitalis-brown">Logros</h2>
-                <div className="space-y-4">
-                  {achievementsLoading ? (
-                    <p>Cargando logros...</p>
-                  ) : (
-                    achievements.map((achievement) => (
-                      <div key={achievement.id} className="flex items-center gap-4 p-4 bg-white rounded-lg shadow">
-                        <img 
-                          src={achievement.icon_url} 
-                          alt={achievement.name}
-                          className="w-12 h-12"
-                        />
-                        <div>
-                          <h3 className="font-semibold">{achievement.name}</h3>
-                          <p className="text-sm text-gray-600">{achievement.description}</p>
-                          <Badge className="mt-2">+{achievement.xp_reward} XP</Badge>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </Card>
-
-              <Card className="p-6">
-                <h2 className="text-xl font-bold mb-4 text-vitalis-brown">Estadísticas</h2>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span>XP Total</span>
-                    <span className="font-bold">{totalXP}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Actividades Completadas</span>
-                    <span className="font-bold">{activities.length}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Logros Desbloqueados</span>
-                    <span className="font-bold">
-                      {activities.filter(a => a.activity_type === 'achievement_earned').length}
-                    </span>
-                  </div>
-                </div>
-              </Card>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {stats.map((stat, index) => (
+                <Card key={index} className="p-6 bg-white rounded-2xl border-2 border-vitalis-gold/20 shadow-lg text-center">
+                  <div className="text-2xl mb-2">{stat.icon}</div>
+                  <div className="text-2xl font-bold text-vitalis-brown">{stat.value}</div>
+                  <div className="text-sm text-vitalis-brown/70">{stat.label}</div>
+                </Card>
+              ))}
             </div>
+
+            {/* Gender-specific quick insights */}
+            {selectedGenderView === 'mujer' && (
+              <Card className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <Moon className="w-6 h-6 text-pink-600" />
+                  <h3 className="text-lg font-bold text-pink-800">Resumen del Ciclo</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="text-center">
+                    <div className="text-xl font-bold text-pink-700">{menstrualData.daysUntilNext}</div>
+                    <div className="text-xs text-pink-600">Días hasta próximo período</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xl">{getMenstrualPhaseInfo(menstrualData.currentPhase).icon}</div>
+                    <div className="text-xs text-pink-600">Fase {getMenstrualPhaseInfo(menstrualData.currentPhase).name}</div>
+                  </div>
+                  <div className="text-center md:col-span-1 col-span-2">
+                    <Button 
+                      onClick={() => setActiveSection('analytics')}
+                      size="sm"
+                      className="bg-pink-500 hover:bg-pink-600 text-white rounded-xl"
+                    >
+                      Ver detalles
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         );
-      // Agrega más casos según sea necesario
+
+      case 'analytics':
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-vitalis-brown">Análisis de Bienestar</h2>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="w-6 h-6 text-vitalis-gold" />
+                <span className="text-vitalis-brown/70">Métricas personalizadas</span>
+              </div>
+            </div>
+
+            {/* Gender View Selector */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-vitalis-gold/20">
+              <h3 className="text-lg font-semibold text-vitalis-brown mb-4">Selecciona la vista de género</h3>
+              <div className="flex flex-wrap gap-3 mb-4">
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('mujer');
+                    setSelectedChart('overview'); // Reset to overview when changing gender view
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'mujer'
+                      ? 'bg-pink-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-pink-100 border border-pink-300'
+                  }`}
+                >
+                  <span className="text-lg">👩</span>
+                  <span className="font-medium">Vista Mujer</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('hombre');
+                    setSelectedChart('overview');
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'hombre'
+                      ? 'bg-blue-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-blue-100 border border-blue-300'
+                  }`}
+                >
+                  <span className="text-lg">👨</span>
+                  <span className="font-medium">Vista Hombre</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('no-binario');
+                    setSelectedChart('overview');
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'no-binario'
+                      ? 'bg-purple-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-purple-100 border border-purple-300'
+                  }`}
+                >
+                  <span className="text-lg">🌈</span>
+                  <span className="font-medium">Vista No Binario</span>
+                </button>
+              </div>
+              
+              <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                <p className="text-sm text-gray-700">
+                  <strong>💡 Tip:</strong> Cambia entre las diferentes vistas para explorar cómo VitalisIA personaliza la experiencia según el género. 
+                  Cada vista muestra métricas y análisis específicos.
+                </p>
+              </div>
+            </div>
+
+            {/* Chart selection buttons */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-vitalis-gold/20">
+              <h3 className="text-lg font-semibold text-vitalis-brown mb-4">
+                Selecciona el tipo de análisis para: {selectedGenderView === 'mujer' ? 'Mujer 👩' : selectedGenderView === 'hombre' ? 'Hombre 👨' : 'No Binario 🌈'}
+              </h3>
+              
+              {/* Debug info */}
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Vista actual:</strong> {selectedGenderView} | 
+                  <strong> Gráfica seleccionada:</strong> {selectedChart} |
+                  <strong> Opciones disponibles:</strong> {getGenderSpecificChartOptions().length}
+                </p>
+              </div>
+              
+              <div className="flex flex-wrap gap-3">
+                {getGenderSpecificChartOptions().map((option) => {
+                  const IconComponent = option.icon;
+                  return (
+                    <button
+                      key={option.id}
+                      onClick={() => setSelectedChart(option.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 ${
+                        selectedChart === option.id
+                          ? 'bg-vitalis-green text-white shadow-lg transform scale-105'
+                          : 'bg-white/60 text-vitalis-brown hover:bg-vitalis-gold/20 border border-vitalis-gold/30'
+                      }`}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                      <span className="text-sm font-medium">{option.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Render selected chart */}
+            <div className="space-y-6">
+              {renderSelectedChart()}
+            </div>
+
+            {/* Gender-specific insights component */}
+            <GenderSpecificInsights 
+              gender={selectedGenderView} 
+              currentPhase={menstrualData.currentPhase}
+              age={userInfo.age.toString()}
+            />
+          </div>
+        );
+
+      case 'achievements':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Mapa de Logros</h2>
+            
+            {/* Achievement Map */}
+            <div className="relative w-full h-96 bg-gradient-to-b from-orange-200 via-yellow-100 to-blue-200 rounded-2xl overflow-hidden mb-6">
+              {/* Sun */}
+              <div className="absolute top-4 right-8 w-16 h-16 bg-yellow-400 rounded-full shadow-lg flex items-center justify-center text-2xl">
+                ☀️
+              </div>
+              
+              {/* Clouds */}
+              <div className="absolute top-8 left-12 w-12 h-8 bg-white rounded-full opacity-70"></div>
+              <div className="absolute top-12 left-16 w-8 h-6 bg-white rounded-full opacity-70"></div>
+              <div className="absolute top-6 left-1/2 w-10 h-6 bg-white rounded-full opacity-70"></div>
+              
+              {/* Achievement Nodes */}
+              {achievements.map((achievement, index) => (
+                <div
+                  key={index}
+                  className={`absolute transform -translate-x-1/2 -translate-y-1/2 ${
+                    achievement.unlocked 
+                      ? 'cursor-pointer hover:scale-110' 
+                      : 'opacity-50'
+                  } transition-all duration-300`}
+                  style={{ 
+                    left: `${achievement.position.x}%`, 
+                    top: `${achievement.position.y}%` 
+                  }}
+                >
+                  <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl shadow-lg border-4 ${
+                    achievement.unlocked
+                      ? achievement.rarity === 'legendario' 
+                        ? 'bg-purple-500 border-purple-300'
+                        : achievement.rarity === 'épico'
+                        ? 'bg-orange-500 border-orange-300'
+                        : achievement.rarity === 'raro'
+                        ? 'bg-blue-500 border-blue-300'
+                        : 'bg-green-500 border-green-300'
+                      : 'bg-gray-400 border-gray-300'
+                  }`}>
+                    {achievement.unlocked ? achievement.icon : '🔒'}
+                  </div>
+                  
+                  {/* Achievement Info Tooltip */}
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+                    <div className="bg-black text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap">
+                      <div className="font-bold">{achievement.name}</div>
+                      <div>{achievement.description}</div>
+                      <div className="text-yellow-300">{achievement.rarity}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Path connections */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                <path
+                  d="M 20% 30% Q 30% 40% 40% 50%"
+                  stroke="#7FA650"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray="5,5"
+                  className="opacity-60"
+                />
+                <path
+                  d="M 40% 50% Q 50% 42% 60% 35%"
+                  stroke="#7FA650"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray="5,5"
+                  className="opacity-60"
+                />
+                <path
+                  d="M 60% 35% Q 65% 50% 70% 65%"
+                  stroke="#7FA650"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray="5,5"
+                  className="opacity-60"
+                />
+                <path
+                  d="M 40% 50% Q 35% 60% 30% 70%"
+                  stroke="#7FA650"
+                  strokeWidth="3"
+                  fill="none"
+                  strokeDasharray="5,5"
+                  className="opacity-60"
+                />
+              </svg>
+            </div>
+
+            {/* Achievement List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {achievements.map((achievement, index) => (
+                <div 
+                  key={index} 
+                  className={`p-4 rounded-2xl border-2 ${
+                    achievement.unlocked 
+                      ? 'bg-vitalis-gold/10 border-vitalis-gold/30' 
+                      : 'bg-gray-100 border-gray-200 opacity-50'
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{achievement.unlocked ? achievement.icon : '🔒'}</span>
+                      <h3 className="font-bold text-vitalis-brown">{achievement.name}</h3>
+                    </div>
+                    <Badge variant={achievement.unlocked ? "default" : "secondary"}>
+                      {achievement.rarity}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-vitalis-brown/70">{achievement.description}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        );
+
+      case 'memories':
+        return (
+          <div className="space-y-6">
+            {/* Header with Create Button */}
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-vitalis-brown">Mis Memorias</h2>
+              <Button 
+                onClick={createNewBook}
+                className="bg-vitalis-gold hover:bg-vitalis-gold-dark text-white rounded-2xl"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Nueva Memoria
+              </Button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Books List */}
+              <div className="lg:col-span-1">
+                <Card className="p-4 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+                  <h3 className="text-lg font-bold text-vitalis-brown mb-4">Mis Libros</h3>
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {books.filter(book => !book.archived).map((book) => (
+                      <div
+                        key={book.id}
+                        className={`p-3 rounded-xl cursor-pointer transition-all duration-200 ${
+                          selectedBook?.id === book.id
+                            ? 'bg-vitalis-gold/20 border-2 border-vitalis-gold/50'
+                            : 'bg-vitalis-gold/5 hover:bg-vitalis-gold/10'
+                        }`}
+                        onClick={() => openBook(book)}
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="w-5 h-5 text-vitalis-gold" />
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-vitalis-brown truncate">{book.title}</h4>
+                            <p className="text-xs text-vitalis-brown/60">
+                              {book.lastModified.toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+
+              {/* Editor */}
+              <div className="lg:col-span-2">
+                <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+                  {(selectedBook || isCreatingBook) ? (
+                    <div className="space-y-4">
+                      {/* Editor Header */}
+                      <div className="flex items-center justify-between">
+                        <Input
+                          value={bookTitle}
+                          onChange={(e) => setBookTitle(e.target.value)}
+                          placeholder="Título de tu memoria..."
+                          className="text-xl font-bold border-none p-0 focus:ring-0"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={saveBook}
+                            className="bg-vitalis-green hover:bg-vitalis-green-dark text-white rounded-xl"
+                            size="sm"
+                          >
+                            <Save className="w-4 h-4 mr-1" />
+                            Guardar
+                          </Button>
+                          {selectedBook && (
+                            <>
+                              <Button
+                                onClick={() => archiveBook(selectedBook.id)}
+                                className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl"
+                                size="sm"
+                              >
+                                <Archive className="w-4 h-4 mr-1" />
+                                Archivar
+                              </Button>
+                              <Button
+                                onClick={() => deleteBook(selectedBook.id)}
+                                className="bg-red-500 hover:bg-red-600 text-white rounded-xl"
+                                size="sm"
+                              >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Eliminar
+                              </Button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Editor Content */}
+                      <Textarea
+                        value={bookContent}
+                        onChange={(e) => setBookContent(e.target.value)}
+                        placeholder="Comienza a escribir tu memoria aquí..."
+                        className="min-h-96 resize-none border-vitalis-gold/30 focus:border-vitalis-gold"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-center py-20">
+                      <BookOpen className="w-16 h-16 text-vitalis-gold/50 mx-auto mb-4" />
+                      <h3 className="text-xl font-bold text-vitalis-brown mb-2">Selecciona una memoria</h3>
+                      <p className="text-vitalis-brown/70">Elige un libro existente o crea uno nuevo para comenzar a escribir</p>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            </div>
+
+            {/* Archived Books */}
+            {books.some(book => book.archived) && (
+              <Card className="p-4 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+                <h3 className="text-lg font-bold text-vitalis-brown mb-4">Archivados</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {books.filter(book => book.archived).map((book) => (
+                    <div
+                      key={book.id}
+                      className="p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+                      onClick={() => openBook(book)}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Archive className="w-5 h-5 text-gray-500" />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-gray-700 truncate">{book.title}</h4>
+                          <p className="text-xs text-gray-500">
+                            {book.lastModified.toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+          </div>
+        );
+
+      case 'progress':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Progreso por Módulo</h2>
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-vitalis-brown font-medium">🧠 MindTrack</span>
+                  <span className="text-vitalis-brown/70">75%</span>
+                </div>
+                <Progress value={75} className="h-3" />
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-vitalis-brown font-medium">🌱 BodySync</span>
+                  <span className="text-vitalis-brown/70">60%</span>
+                </div>
+                <Progress value={60} className="h-3" />
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-vitalis-brown font-medium">🍃 SoulBoost</span>
+                  <span className="text-vitalis-brown/70">85%</span>
+                </div>
+                <Progress value={85} className="h-3" />
+              </div>
+              <div>
+                <div className="flex justify-between mb-2">
+                  <span className="text-vitalis-brown font-medium">🤝 SocialHarmony</span>
+                  <span className="text-vitalis-brown/70">55%</span>
+                </div>
+                <Progress value={55} className="h-3" />
+              </div>
+            </div>
+          </Card>
+        );
+
+      case 'settings':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Configuración General</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-vitalis-brown mb-3">Idioma</h3>
+                <select className="w-full p-3 border border-vitalis-gold/30 rounded-xl bg-white">
+                  <option>Español</option>
+                  <option>English</option>
+                  <option>Français</option>
+                </select>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium text-vitalis-brown mb-3">Zona Horaria</h3>
+                <select className="w-full p-3 border border-vitalis-gold/30 rounded-xl bg-white">
+                  <option>GMT-5 (Colombia)</option>
+                  <option>GMT-6 (México)</option>
+                  <option>GMT-3 (Argentina)</option>
+                </select>
+              </div>
+            </div>
+          </Card>
+        );
+
+      case 'privacy':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Configuración de Privacidad</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-vitalis-gold/10 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-vitalis-brown">Perfil público</h3>
+                  <p className="text-sm text-vitalis-brown/70">Permite que otros usuarios vean tu perfil</p>
+                </div>
+                <input type="checkbox" className="toggle" />
+              </div>
+              <div className="flex items-center justify-between p-4 bg-vitalis-gold/10 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-vitalis-brown">Compartir progreso</h3>
+                  <p className="text-sm text-vitalis-brown/70">Comparte tu progreso con amigos</p>
+                </div>
+                <input type="checkbox" className="toggle" defaultChecked />
+              </div>
+            </div>
+          </Card>
+        );
+
+      case 'notifications':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Notificaciones</h2>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-4 bg-vitalis-gold/10 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-vitalis-brown">Recordatorios diarios</h3>
+                  <p className="text-sm text-vitalis-brown/70">Recibe recordatorios para completar actividades</p>
+                </div>
+                <input type="checkbox" className="toggle" defaultChecked />
+              </div>
+              <div className="flex items-center justify-between p-4 bg-vitalis-gold/10 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-vitalis-brown">Logros desbloqueados</h3>
+                  <p className="text-sm text-vitalis-brown/70">Notificaciones cuando desbloquees logros</p>
+                </div>
+                <input type="checkbox" className="toggle" defaultChecked />
+              </div>
+            </div>
+          </Card>
+        );
+
+      case 'appearance':
+        return (
+          <Card className="p-6 bg-white dark:bg-gray-800 rounded-3xl border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown dark:text-white mb-6">Apariencia</h2>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-vitalis-brown dark:text-white mb-3">Tema</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div 
+                    onClick={() => setTheme('light')}
+                    className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      theme === 'light' 
+                        ? 'border-vitalis-gold bg-vitalis-gold/10 shadow-lg transform scale-105' 
+                        : 'border-vitalis-gold/30 hover:bg-vitalis-gold/10'
+                    }`}
+                  >
+                    <div className="w-full h-20 bg-gradient-to-br from-vitalis-cream to-white rounded-lg mb-2"></div>
+                    <p className="text-center text-vitalis-brown dark:text-white font-medium">Claro</p>
+                    {theme === 'light' && (
+                      <div className="text-center mt-2">
+                        <span className="text-xs bg-vitalis-gold text-white px-2 py-1 rounded-full">Activo</span>
+                      </div>
+                    )}
+                  </div>
+                  <div 
+                    onClick={() => setTheme('dark')}
+                    className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      theme === 'dark' 
+                        ? 'border-blue-500 bg-blue-500/10 shadow-lg transform scale-105' 
+                        : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <div className="w-full h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-2"></div>
+                    <p className="text-center text-vitalis-brown dark:text-white font-medium">Oscuro</p>
+                    {theme === 'dark' && (
+                      <div className="text-center mt-2">
+                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">Activo</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-gray-700 rounded-xl">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>💡 Tip:</strong> El tema seleccionado se aplicará a toda la aplicación y se guardará para futuras sesiones.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        );
+
+      case 'help':
+        return (
+          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Centro de Ayuda</h2>
+            <div className="space-y-4">
+              <div className="p-4 bg-vitalis-gold/10 rounded-xl">
+                <h3 className="font-medium text-vitalis-brown mb-2">¿Cómo funciona VitalisIA?</h3>
+                <p className="text-sm text-vitalis-brown/70">Aprende los conceptos básicos de la plataforma</p>
+              </div>
+              <div className="p-4 bg-vitalis-gold/10 rounded-xl">
+                <h3 className="font-medium text-vitalis-brown mb-2">Preguntas frecuentes</h3>
+                <p className="text-sm text-vitalis-brown/70">Encuentra respuestas a las dudas más comunes</p>
+              </div>
+              <div className="p-4 bg-vitalis-gold/10 rounded-xl">
+                <h3 className="font-medium text-vitalis-brown mb-2">Contactar soporte</h3>
+                <p className="text-sm text-vitalis-brown/70">¿Necesitas ayuda personalizada?</p>
+              </div>
+            </div>
+          </Card>
+        );
+
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
+    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
       <Sidebar 
         isOpen={sidebarOpen} 
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         onOpenJourneyMap={() => {}}
       />
       
-      <div className="md:ml-80 transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold text-vitalis-brown mb-8">Perfil</h1>
-          {renderContent()}
+      <div className="md:ml-80 transition-all duration-300 flex-1 flex flex-col">
+        <div className="flex-1 p-4">
+          <div className="max-w-6xl mx-auto py-6">
+            {/* Back to Profile Button - Only show when not in profile section */}
+            {activeSection !== 'profile' && (
+              <div className="mb-6">
+                <Button
+                  onClick={() => setActiveSection('profile')}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-white/80 dark:bg-gray-800/80 border-vitalis-gold/30 dark:border-gray-600 text-vitalis-brown dark:text-white hover:bg-vitalis-gold/10 dark:hover:bg-gray-700 rounded-2xl transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Volver al Perfil
+                </Button>
+              </div>
+            )}
+
+            {renderContent()}
+          </div>
         </div>
+        
+        <Footer />
       </div>
     </div>
   );
