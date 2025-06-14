@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import GenderSpecificInsights from '@/components/GenderSpecificInsights';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +20,8 @@ const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [selectedChart, setSelectedChart] = useState('overview');
+  const [selectedGenderView, setSelectedGenderView] = useState('hombre'); // New state for manual gender view control
+  const { theme, setTheme } = useTheme(); // Add theme context
   const navigate = useNavigate();
   const [books, setBooks] = useState([
     { id: 1, title: 'Mi Diario Personal', content: 'Hoy fue un día increíble...', lastModified: new Date(), archived: false },
@@ -38,6 +41,23 @@ const Profile = () => {
     gender: 'hombre',
     age: 25
   });
+
+  // Load user data from localStorage on component mount
+  useEffect(() => {
+    const savedUserProfile = localStorage.getItem('userProfile');
+    if (savedUserProfile) {
+      const userData = JSON.parse(savedUserProfile);
+      setUserInfo({
+        name: userData.name || 'Usuario',
+        email: userData.email || 'usuario@email.com',
+        university: userData.university || 'Universidad',
+        career: userData.career || 'Carrera',
+        semester: userData.semester || 'Semestre',
+        gender: userData.gender || 'hombre',
+        age: parseInt(userData.age) || 25
+      });
+    }
+  }, []);
 
   // Menstrual cycle data for women
   const [menstrualData, setMenstrualData] = useState({
@@ -182,7 +202,7 @@ const Profile = () => {
   };
 
   const getGenderSpecificMetrics = () => {
-    if (userInfo.gender === 'mujer') {
+    if (selectedGenderView === 'mujer') {
       return (
         <div className="space-y-6">
           {/* Menstrual Cycle Tracking */}
@@ -252,7 +272,7 @@ const Profile = () => {
           </Card>
         </div>
       );
-    } else if (userInfo.gender === 'hombre') {
+    } else if (selectedGenderView === 'hombre') {
       return (
         <div className="space-y-6">
           {/* Testosterone and Energy Tracking */}
@@ -364,7 +384,7 @@ const Profile = () => {
   };
 
   const getGenderSpecificChartOptions = () => {
-    if (userInfo.gender === 'mujer') {
+    if (selectedGenderView === 'mujer') {
       return [
         { id: 'overview', label: 'Resumen General', icon: BarChart3 },
         { id: 'hormonal', label: 'Ciclo Hormonal', icon: Moon },
@@ -372,7 +392,7 @@ const Profile = () => {
         { id: 'energy', label: 'Niveles de Energía', icon: Zap },
         { id: 'sleep', label: 'Calidad del Sueño', icon: Moon }
       ];
-    } else if (userInfo.gender === 'hombre') {
+    } else if (selectedGenderView === 'hombre') {
       return [
         { id: 'overview', label: 'Resumen General', icon: BarChart3 },
         { id: 'testosterone', label: 'Energía Diaria', icon: Zap },
@@ -392,7 +412,7 @@ const Profile = () => {
   };
 
   const renderSelectedChart = () => {
-    if (userInfo.gender === 'mujer') {
+    if (selectedGenderView === 'mujer') {
       switch (selectedChart) {
         case 'overview':
           return getGenderSpecificMetrics();
@@ -407,7 +427,7 @@ const Profile = () => {
         default:
           return getGenderSpecificMetrics();
       }
-    } else if (userInfo.gender === 'hombre') {
+    } else if (selectedGenderView === 'hombre') {
       switch (selectedChart) {
         case 'overview':
           return getGenderSpecificMetrics();
@@ -1084,9 +1104,9 @@ const Profile = () => {
         return (
           <div className="space-y-6">
             {/* Profile Header */}
-            <Card className="p-8 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+            <Card className="p-8 bg-white dark:bg-gray-800 rounded-3xl border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg transition-colors duration-200">
               <div className="flex flex-col md:flex-row items-center gap-6">
-                <div className="w-24 h-24 bg-vitalis-gold/20 rounded-full flex items-center justify-center text-4xl">
+                <div className="w-24 h-24 bg-vitalis-gold/20 dark:bg-gray-700 rounded-full flex items-center justify-center text-4xl">
                   {userInfo.gender === 'mujer' ? '👩' : userInfo.gender === 'hombre' ? '👨' : '🌈'}
                 </div>
                 
@@ -1096,28 +1116,30 @@ const Profile = () => {
                       <Input 
                         value={userInfo.name} 
                         onChange={(e) => setUserInfo({...userInfo, name: e.target.value})}
-                        className="text-xl font-bold"
+                        className="text-xl font-bold dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       />
                       <Input 
                         value={userInfo.email} 
                         onChange={(e) => setUserInfo({...userInfo, email: e.target.value})}
+                        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       />
                       <Input 
                         value={userInfo.university} 
                         onChange={(e) => setUserInfo({...userInfo, university: e.target.value})}
+                        className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       />
                     </div>
                   ) : (
                     <>
-                      <h1 className="text-3xl font-bold text-vitalis-brown mb-2">{userInfo.name}</h1>
-                      <p className="text-vitalis-brown/70 mb-1">{userInfo.email}</p>
-                      <p className="text-vitalis-brown/70 mb-1">{userInfo.university}</p>
-                      <p className="text-vitalis-brown/70 mb-2">{userInfo.career} - {userInfo.semester}</p>
+                      <h1 className="text-3xl font-bold text-vitalis-brown dark:text-white mb-2">{userInfo.name}</h1>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-1">{userInfo.email}</p>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-1">{userInfo.university}</p>
+                      <p className="text-vitalis-brown/70 dark:text-gray-300 mb-2">{userInfo.career} - {userInfo.semester}</p>
                       <div className="flex items-center justify-center md:justify-start gap-2 mt-2">
-                        <Badge className="bg-vitalis-gold/20 text-vitalis-brown">
+                        <Badge className="bg-vitalis-gold/20 text-vitalis-brown dark:bg-gray-600 dark:text-gray-200">
                           {userInfo.gender === 'mujer' ? 'Mujer' : userInfo.gender === 'hombre' ? 'Hombre' : 'No binario'}
                         </Badge>
-                        <Badge className="bg-vitalis-green/20 text-vitalis-green">
+                        <Badge className="bg-vitalis-green/20 text-vitalis-green dark:bg-green-800 dark:text-green-200">
                           {userInfo.age} años
                         </Badge>
                       </div>
@@ -1145,6 +1167,29 @@ const Profile = () => {
               </div>
             </Card>
 
+            {/* Internal Profile Navigation */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-4 border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg transition-colors duration-200">
+              <div className="flex flex-wrap gap-2">
+                {sidebarItems.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveSection(item.id)}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-200 ${
+                        activeSection === item.id
+                          ? 'bg-vitalis-gold text-white shadow-lg transform scale-105'
+                          : 'bg-white/60 dark:bg-gray-700/60 text-vitalis-brown dark:text-gray-200 hover:bg-vitalis-gold/20 dark:hover:bg-gray-600 border border-vitalis-gold/30 dark:border-gray-500'
+                      }`}
+                    >
+                      <IconComponent className="w-4 h-4" />
+                      <span className="text-sm font-medium">{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {stats.map((stat, index) => (
@@ -1157,7 +1202,7 @@ const Profile = () => {
             </div>
 
             {/* Gender-specific quick insights */}
-            {userInfo.gender === 'mujer' && (
+            {selectedGenderView === 'mujer' && (
               <Card className="p-6 bg-gradient-to-r from-pink-50 to-rose-50 border-2 border-pink-200 shadow-lg">
                 <div className="flex items-center gap-3 mb-4">
                   <Moon className="w-6 h-6 text-pink-600" />
@@ -1198,9 +1243,79 @@ const Profile = () => {
               </div>
             </div>
 
+            {/* Gender View Selector */}
+            <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-vitalis-gold/20">
+              <h3 className="text-lg font-semibold text-vitalis-brown mb-4">Selecciona la vista de género</h3>
+              <div className="flex flex-wrap gap-3 mb-4">
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('mujer');
+                    setSelectedChart('overview'); // Reset to overview when changing gender view
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'mujer'
+                      ? 'bg-pink-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-pink-100 border border-pink-300'
+                  }`}
+                >
+                  <span className="text-lg">👩</span>
+                  <span className="font-medium">Vista Mujer</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('hombre');
+                    setSelectedChart('overview');
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'hombre'
+                      ? 'bg-blue-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-blue-100 border border-blue-300'
+                  }`}
+                >
+                  <span className="text-lg">👨</span>
+                  <span className="font-medium">Vista Hombre</span>
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setSelectedGenderView('no-binario');
+                    setSelectedChart('overview');
+                  }}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-xl transition-all duration-200 ${
+                    selectedGenderView === 'no-binario'
+                      ? 'bg-purple-500 text-white shadow-lg transform scale-105'
+                      : 'bg-white/60 text-vitalis-brown hover:bg-purple-100 border border-purple-300'
+                  }`}
+                >
+                  <span className="text-lg">🌈</span>
+                  <span className="font-medium">Vista No Binario</span>
+                </button>
+              </div>
+              
+              <div className="p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
+                <p className="text-sm text-gray-700">
+                  <strong>💡 Tip:</strong> Cambia entre las diferentes vistas para explorar cómo VitalisIA personaliza la experiencia según el género. 
+                  Cada vista muestra métricas y análisis específicos.
+                </p>
+              </div>
+            </div>
+
             {/* Chart selection buttons */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border-2 border-vitalis-gold/20">
-              <h3 className="text-lg font-semibold text-vitalis-brown mb-4">Selecciona el tipo de análisis</h3>
+              <h3 className="text-lg font-semibold text-vitalis-brown mb-4">
+                Selecciona el tipo de análisis para: {selectedGenderView === 'mujer' ? 'Mujer 👩' : selectedGenderView === 'hombre' ? 'Hombre 👨' : 'No Binario 🌈'}
+              </h3>
+              
+              {/* Debug info */}
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <strong>Vista actual:</strong> {selectedGenderView} | 
+                  <strong> Gráfica seleccionada:</strong> {selectedChart} |
+                  <strong> Opciones disponibles:</strong> {getGenderSpecificChartOptions().length}
+                </p>
+              </div>
+              
               <div className="flex flex-wrap gap-3">
                 {getGenderSpecificChartOptions().map((option) => {
                   const IconComponent = option.icon;
@@ -1229,7 +1344,7 @@ const Profile = () => {
 
             {/* Gender-specific insights component */}
             <GenderSpecificInsights 
-              gender={userInfo.gender} 
+              gender={selectedGenderView} 
               currentPhase={menstrualData.currentPhase}
               age={userInfo.age.toString()}
             />
@@ -1604,20 +1719,50 @@ const Profile = () => {
 
       case 'appearance':
         return (
-          <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
-            <h2 className="text-xl font-bold text-vitalis-brown mb-6">Apariencia</h2>
+          <Card className="p-6 bg-white dark:bg-gray-800 rounded-3xl border-2 border-vitalis-gold/20 dark:border-gray-600 shadow-lg">
+            <h2 className="text-xl font-bold text-vitalis-brown dark:text-white mb-6">Apariencia</h2>
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-medium text-vitalis-brown mb-3">Tema</h3>
+                <h3 className="text-lg font-medium text-vitalis-brown dark:text-white mb-3">Tema</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 border-2 border-vitalis-gold/30 rounded-xl cursor-pointer hover:bg-vitalis-gold/10">
+                  <div 
+                    onClick={() => setTheme('light')}
+                    className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      theme === 'light' 
+                        ? 'border-vitalis-gold bg-vitalis-gold/10 shadow-lg transform scale-105' 
+                        : 'border-vitalis-gold/30 hover:bg-vitalis-gold/10'
+                    }`}
+                  >
                     <div className="w-full h-20 bg-gradient-to-br from-vitalis-cream to-white rounded-lg mb-2"></div>
-                    <p className="text-center text-vitalis-brown">Claro</p>
+                    <p className="text-center text-vitalis-brown dark:text-white font-medium">Claro</p>
+                    {theme === 'light' && (
+                      <div className="text-center mt-2">
+                        <span className="text-xs bg-vitalis-gold text-white px-2 py-1 rounded-full">Activo</span>
+                      </div>
+                    )}
                   </div>
-                  <div className="p-4 border-2 border-gray-300 rounded-xl cursor-pointer hover:bg-gray-50">
+                  <div 
+                    onClick={() => setTheme('dark')}
+                    className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                      theme === 'dark' 
+                        ? 'border-blue-500 bg-blue-500/10 shadow-lg transform scale-105' 
+                        : 'border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
                     <div className="w-full h-20 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg mb-2"></div>
-                    <p className="text-center text-vitalis-brown">Oscuro</p>
+                    <p className="text-center text-vitalis-brown dark:text-white font-medium">Oscuro</p>
+                    {theme === 'dark' && (
+                      <div className="text-center mt-2">
+                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded-full">Activo</span>
+                      </div>
+                    )}
                   </div>
+                </div>
+                
+                <div className="mt-4 p-4 bg-blue-50 dark:bg-gray-700 rounded-xl">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>💡 Tip:</strong> El tema seleccionado se aplicará a toda la aplicación y se guardará para futuras sesiones.
+                  </p>
                 </div>
               </div>
             </div>
@@ -1651,7 +1796,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex flex-col transition-colors duration-300">
       <Sidebar 
         isOpen={sidebarOpen} 
         onToggle={() => setSidebarOpen(!sidebarOpen)}
@@ -1661,6 +1806,20 @@ const Profile = () => {
       <div className="md:ml-80 transition-all duration-300 flex-1 flex flex-col">
         <div className="flex-1 p-4">
           <div className="max-w-6xl mx-auto py-6">
+            {/* Back to Profile Button - Only show when not in profile section */}
+            {activeSection !== 'profile' && (
+              <div className="mb-6">
+                <Button
+                  onClick={() => setActiveSection('profile')}
+                  variant="outline"
+                  className="flex items-center gap-2 bg-white/80 dark:bg-gray-800/80 border-vitalis-gold/30 dark:border-gray-600 text-vitalis-brown dark:text-white hover:bg-vitalis-gold/10 dark:hover:bg-gray-700 rounded-2xl transition-colors duration-200"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Volver al Perfil
+                </Button>
+              </div>
+            )}
+
             {renderContent()}
           </div>
         </div>

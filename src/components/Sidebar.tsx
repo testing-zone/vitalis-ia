@@ -93,14 +93,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
 
       {/* Sidebar */}
       <div className={`
-        fixed left-0 top-0 h-full w-80 bg-white border-r-2 border-vitalis-gold/20 shadow-xl z-50
+        fixed left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 border-r-2 border-vitalis-gold/20 dark:border-gray-600 shadow-xl z-50 transition-colors duration-200
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
       `}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-vitalis-gold/20">
+          <div className="p-6 border-b border-vitalis-gold/20 dark:border-gray-600">
             <Link 
               to="/" 
               className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-200"
@@ -113,15 +113,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
                 alt="VitalisIA Capibara Logo"
                 className="w-10 h-10 rounded-full object-contain bg-white shadow-lg"
               />
-              <h2 className="text-xl font-bold text-vitalis-brown">VitalisIA</h2>
+              <h2 className="text-xl font-bold text-vitalis-brown dark:text-white">VitalisIA</h2>
             </Link>
-            <p className="text-sm text-vitalis-brown/60 mt-1">Tu compañero de bienestar</p>
+            <p className="text-sm text-vitalis-brown/60 dark:text-gray-300 mt-1">Tu compañero de bienestar</p>
           </div>
 
           <ScrollArea className="flex-1">
             {/* Navigation */}
             <div className="p-4">
-              <h3 className="text-sm font-semibold text-vitalis-brown/60 mb-3 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-vitalis-brown/60 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 Navegación
               </h3>
               <div className="space-y-2">
@@ -134,7 +134,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
                         w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 text-left
                         ${item.active 
                           ? 'bg-vitalis-gold text-white shadow-xl shadow-vitalis-gold/30 transform scale-105 border-2 border-vitalis-gold-dark' 
-                          : 'text-vitalis-brown hover:bg-vitalis-gold/10 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
+                          : 'text-vitalis-brown dark:text-gray-200 hover:bg-vitalis-gold/10 dark:hover:bg-gray-700 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
                         }
                       `}
                     >
@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
                         flex items-center gap-3 p-3 rounded-xl transition-all duration-300
                         ${item.active 
                           ? 'bg-vitalis-gold text-white shadow-xl shadow-vitalis-gold/30 transform scale-105 border-2 border-vitalis-gold-dark' 
-                          : 'text-vitalis-brown hover:bg-vitalis-gold/10 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
+                          : 'text-vitalis-brown dark:text-gray-200 hover:bg-vitalis-gold/10 dark:hover:bg-gray-700 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
                         }
                       `}
                       onClick={() => {
@@ -166,26 +166,26 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
 
             {/* Journey Progress Summary */}
             <div className="p-4">
-              <h3 className="text-sm font-semibold text-vitalis-brown/60 mb-3 uppercase tracking-wide">
+              <h3 className="text-sm font-semibold text-vitalis-brown/60 dark:text-gray-400 mb-3 uppercase tracking-wide">
                 Progress Summary
               </h3>
-              <Card className="p-4 bg-gradient-to-r from-vitalis-green/10 to-vitalis-gold/10 border-2 border-vitalis-gold/20">
+              <Card className="p-4 bg-gradient-to-r from-vitalis-green/10 to-vitalis-gold/10 dark:from-gray-700/50 dark:to-gray-600/50 border-2 border-vitalis-gold/20 dark:border-gray-600">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-semibold text-vitalis-brown">Journey Actual</h4>
-                  <Calendar className="w-5 h-5 text-vitalis-gold" />
+                  <h4 className="font-semibold text-vitalis-brown dark:text-white">Journey Actual</h4>
+                  <Calendar className="w-5 h-5 text-vitalis-gold dark:text-yellow-400" />
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-vitalis-brown/70">Completadas</span>
-                    <span className="font-medium text-vitalis-brown">2/6</span>
+                    <span className="text-vitalis-brown/70 dark:text-gray-300">Completadas</span>
+                    <span className="font-medium text-vitalis-brown dark:text-white">2/6</span>
                   </div>
-                  <div className="w-full bg-vitalis-gold/20 rounded-full h-2">
+                  <div className="w-full bg-vitalis-gold/20 dark:bg-gray-600 rounded-full h-2">
                     <div 
-                      className="bg-vitalis-gold rounded-full h-2 transition-all duration-500"
+                      className="bg-vitalis-gold dark:bg-yellow-400 rounded-full h-2 transition-all duration-500"
                       style={{ width: '33%' }}
                     />
                   </div>
-                  <p className="text-xs text-vitalis-brown/60">
+                  <p className="text-xs text-vitalis-brown/60 dark:text-gray-400">
                     ¡Sigue así! Haz click en Journey Map para ver tu ruta completa.
                   </p>
                 </div>
@@ -198,7 +198,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
       {/* Chat Modal */}
       <ChatModal 
         isOpen={chatModalOpen} 
-        onClose={() => handleChatModalChange(false)} 
+        onClose={() => handleChatModalChange(false)}
       />
     </>
   );
