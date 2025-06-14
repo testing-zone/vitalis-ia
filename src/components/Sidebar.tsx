@@ -101,14 +101,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="p-6 border-b border-vitalis-gold/20">
-            <div className="flex items-center gap-3">
+            <Link 
+              to="/" 
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-200"
+              onClick={() => {
+                if (window.innerWidth < 768) onToggle();
+              }}
+            >
               <img 
                 src="/lovable-uploads/4e3febb6-c9a1-4006-b0a9-8f196c792c60.png"
                 alt="VitalisIA Capibara Logo"
                 className="w-10 h-10 rounded-full object-contain bg-white shadow-lg"
               />
               <h2 className="text-xl font-bold text-vitalis-brown">VitalisIA</h2>
-            </div>
+            </Link>
             <p className="text-sm text-vitalis-brown/60 mt-1">Tu compañero de bienestar</p>
           </div>
 

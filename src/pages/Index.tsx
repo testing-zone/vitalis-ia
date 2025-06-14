@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Avatar from '@/components/Avatar';
 import ModuleCard from '@/components/ModuleCard';
@@ -111,8 +110,6 @@ const Index = () => {
         ) : (
           // Main Dashboard Content
           <>
-            <Header />
-
             <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
               {/* Welcome Section con Capibara - Mejorado para desktop */}
               <div className="">
