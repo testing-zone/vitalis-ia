@@ -174,31 +174,31 @@ const Contacts = () => {
 
           {/* Tabs Navigation */}
           <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 mb-8 bg-white rounded-3xl border-2 border-vitalis-gold/20 p-1.5">
+            <TabsList className="flex w-full mb-8 bg-white rounded-3xl border-2 border-vitalis-gold/20 p-3 gap-2">
               <TabsTrigger 
                 value="friends" 
-                className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                className="flex-1 rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-4 px-6 min-h-[48px] text-center flex items-center justify-center"
               >
                 <Users className="w-4 h-4 mr-2" />
                 Mis Amigos
               </TabsTrigger>
               <TabsTrigger 
                 value="celebrations" 
-                className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                className="flex-1 rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-4 px-6 min-h-[48px] text-center flex items-center justify-center"
               >
                 <Gift className="w-4 h-4 mr-2" />
                 Celebraciones
               </TabsTrigger>
               <TabsTrigger 
                 value="support" 
-                className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                className="flex-1 rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-4 px-6 min-h-[48px] text-center flex items-center justify-center"
               >
                 <ThumbsUp className="w-4 h-4 mr-2" />
                 Apoyo Mutuo
               </TabsTrigger>
               <TabsTrigger 
                 value="memories" 
-                className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                className="flex-1 rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-4 px-6 min-h-[48px] text-center flex items-center justify-center"
               >
                 <Star className="w-4 h-4 mr-2" />
                 Recuerdos

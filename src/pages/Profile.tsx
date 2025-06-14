@@ -597,20 +597,22 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
+    <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10 flex flex-col">
       <Sidebar 
         isOpen={sidebarOpen} 
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         onOpenJourneyMap={() => {}}
       />
       
-      <div className="md:ml-80 transition-all duration-300">
-        <div className="max-w-6xl mx-auto px-4 py-6">
-          {renderContent()}
+      <div className="md:ml-80 transition-all duration-300 flex-1 flex flex-col">
+        <div className="flex-1 p-4">
+          <div className="max-w-6xl mx-auto py-6">
+            {renderContent()}
+          </div>
         </div>
+        
+        <Footer />
       </div>
-      
-      <Footer />
     </div>
   );
 };
