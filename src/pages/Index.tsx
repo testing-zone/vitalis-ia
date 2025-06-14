@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Avatar from '@/components/Avatar';
 import ModuleCard from '@/components/ModuleCard';
@@ -28,6 +27,7 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [journeyMapOpen, setJourneyMapOpen] = useState(false);
+  const [sidebarChatOpen, setSidebarChatOpen] = useState(false);
 
   // Datos de ejemplo para los gráficos
   const moodData = [
@@ -92,28 +92,27 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
       {/* Sidebar */}
-      <Sidebar 
-        isOpen={sidebarOpen} 
-        onToggle={() => setSidebarOpen(!sidebarOpen)} 
+      <Sidebar
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
         onOpenJourneyMap={() => setJourneyMapOpen(true)}
+        onChatStateChange={(isOpen) => setSidebarChatOpen(isOpen)}
       />
-      
+
       {/* Main content with sidebar offset */}
       <div className="md:ml-80 transition-all duration-300">
         {journeyMapOpen ? (
           // Journey Map View
-          <JourneyMapView 
-            isOpen={journeyMapOpen} 
-            onClose={() => setJourneyMapOpen(false)} 
+          <JourneyMapView
+            isOpen={journeyMapOpen}
+            onClose={() => setJourneyMapOpen(false)}
           />
         ) : (
           // Main Dashboard Content
           <>
-            <Header />
-            
-            <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+            <div className="max-w-5xl mx-auto px-4 py-6 space-y-6">
               {/* Welcome Section con Capibara - Mejorado para desktop */}
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+              <div className="">
                 <div className="xl:col-span-2">
                   <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
                     <div className="flex items-center justify-between mb-4">
@@ -123,14 +122,14 @@ const Index = () => {
                       </div>
                       <Avatar level={currentLevel} mood={avatarMood} />
                     </div>
-                    
+
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm text-vitalis-brown">
                         <span>XP: {currentXP}/{nextLevelXP}</span>
                         <span>Próximo nivel: {currentLevel + 1}</span>
                       </div>
                       <div className="w-full bg-vitalis-gold/20 rounded-full h-4">
-                        <div 
+                        <div
                           className="bg-vitalis-gold rounded-full h-4 transition-all duration-500"
                           style={{ width: `${(currentXP / nextLevelXP) * 100}%` }}
                         />
@@ -139,56 +138,145 @@ const Index = () => {
                   </Card>
                 </div>
 
-                <CapybaraCompanion level={currentLevel} mood={avatarMood} />
+              </div>
+              {/* Stats Cards - Extendidos horizontalmente en una sola fila */}
+              {/* Stats Cards - Ocupan todo el espacio horizontal */}
+              <div className="flex flex-col md:flex-row w-full gap-4">
+                <div className="w-full md:flex-1">
+                  <StatsCard
+                    title="Racha"
+                    value="7 días"
+                    change="+2"
+                    icon="🔥"
+                    trend="up"
+                  />
+                </div>
+                <div className="w-full md:flex-1">
+                  <StatsCard
+                    title="Estado"
+                    value="4.2/5"
+                    change="+0.3"
+                    icon="😊"
+                    trend="up"
+                  />
+                </div>
+                <div className="w-full md:flex-1">
+                  <StatsCard
+                    title="Actividades"
+                    value="3/5"
+                    change="2 pendientes"
+                    icon="✅"
+                    trend="neutral"
+                  />
+                </div>
+                <div className="w-full md:flex-1">
+                  <StatsCard
+                    title="XP Total"
+                    value={currentXP.toLocaleString()}
+                    change="+150"
+                    icon="⭐"
+                    trend="up"
+                  />
+                </div>
               </div>
 
-              {/* Stats Cards y Quick Actions - Mejorado para desktop */}
-              <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
-                <StatsCard 
-                  title="Racha" 
-                  value="7 días" 
-                  change="+2" 
-                  icon="🔥" 
-                  trend="up" 
-                />
-                <StatsCard 
-                  title="Estado" 
-                  value="4.2/5" 
-                  change="+0.3" 
-                  icon="😊" 
-                  trend="up" 
-                />
-                <StatsCard 
-                  title="Actividades" 
-                  value="3/5" 
-                  change="2 pendientes" 
-                  icon="✅" 
-                  trend="neutral" 
-                />
-                <StatsCard 
-                  title="XP Total" 
-                  value={currentXP.toLocaleString()} 
-                  change="+150" 
-                  icon="⭐" 
-                  trend="up" 
-                />
-                
-                {/* Quick Actions - Nuevos */}
-                <Link to="/contacts" className="block">
-                  <Card className="p-4 bg-white rounded-2xl border-2 border-vitalis-green/20 shadow-lg hover:shadow-xl transition-all duration-300 text-center cursor-pointer">
-                    <Users className="w-6 h-6 text-vitalis-green mx-auto mb-2" />
-                    <p className="text-xs text-vitalis-brown font-medium">Contactos</p>
-                  </Card>
-                </Link>
-                
-                <Card 
-                  className="p-4 bg-white rounded-2xl border-2 border-vitalis-gold/20 shadow-lg hover:shadow-xl transition-all duration-300 text-center cursor-pointer"
-                  onClick={() => setChatModalOpen(true)}
-                >
-                  <MessageCircle className="w-6 h-6 text-vitalis-gold mx-auto mb-2" />
-                  <p className="text-xs text-vitalis-brown font-medium">Chat IA</p>
-                </Card>
-              </div>
+
+              {/* Video Widget Section */}
+              <Card className="w-full p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold text-vitalis-brown">Reflexión del Día</h2>
+                  <div className="flex items-center gap-2 text-sm text-vitalis-brown/70">
+                    <span>Desliza para ver más</span>
+                    <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory">
+                    {/* Video 1 */}
+                    <div className="flex-none w-[300px] snap-center">
+                      <div className="relative w-full pt-[56.25%] mb-3 group">
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                          src="https://www.youtube.com/embed/FS1jdi51U8I"
+                          title="Mindfulness para principiantes"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-medium text-vitalis-brown">Mindfulness para principiantes</h3>
+                        <p className="text-xs text-vitalis-brown/70">5 minutos • Principiante</p>
+                      </div>
+                    </div>
+
+                    {/* Video 2 */}
+                    <div className="flex-none w-[300px] snap-center">
+                      <div className="relative w-full pt-[56.25%] mb-3 group">
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                          src="https://www.youtube.com/embed/b5w7DkseJjc"
+                          title="Meditación guiada"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-medium text-vitalis-brown">Meditación guiada de 10 minutos</h3>
+                        <p className="text-xs text-vitalis-brown/70">10 minutos • Intermedio</p>
+                      </div>
+                    </div>
+
+                    {/* Video 3 */}
+                    <div className="flex-none w-[300px] snap-center">
+                      <div className="relative w-full pt-[56.25%] mb-3 group">
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                          src="https://www.youtube.com/embed/sPbwiBHFgSU"
+                          title="Gratitud diaria"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-medium text-vitalis-brown">Practicando la gratitud diaria</h3>
+                        <p className="text-xs text-vitalis-brown/70">8 minutos • Todos los niveles</p>
+                      </div>
+                    </div>
+
+                    {/* Video 4 */}
+                    <div className="flex-none w-[300px] snap-center">
+                      <div className="relative w-full pt-[56.25%] mb-3 group">
+                        <iframe
+                          className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                          src="https://www.youtube.com/embed/rzT51IXkiS4"
+                          title="Respiración consciente"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-medium text-vitalis-brown">Técnicas de respiración consciente</h3>
+                        <p className="text-xs text-vitalis-brown/70">6 minutos • Principiante</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scroll Indicators */}
+                  <div className="flex justify-center gap-2 mt-4">
+                    <div className="w-2 h-2 rounded-full bg-vitalis-gold" />
+                    <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+                    <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+                    <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+                  </div>
+                </div>
+              </Card>
 
               {/* Layout mejorado para desktop */}
               <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -200,52 +288,41 @@ const Index = () => {
                     <MoodTracker />
                   </div>
 
-                  {/* Módulos principales */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {modules.map((module, index) => (
-                      <ModuleCard
-                        key={index}
-                        {...module}
-                        onClick={() => console.log(`Abrir módulo ${module.title}`)}
-                      />
-                    ))}
-                  </div>
+                  
                 </div>
 
                 {/* Columna derecha - Widgets */}
                 <div className="space-y-6">
                   <ScreenTimeWidget />
-                  
-                  {/* Widget de progreso rápido */}
-                  <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
-                    <h3 className="text-lg font-bold text-vitalis-brown mb-4">Progreso de Hoy</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-vitalis-brown">Meditación</span>
-                        <span className="text-sm text-vitalis-green font-medium">✓ Completado</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-vitalis-brown">Ejercicio</span>
-                        <span className="text-sm text-vitalis-brown/50">Pendiente</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-vitalis-brown">Check-in emocional</span>
-                        <span className="text-sm text-vitalis-green font-medium">✓ Completado</span>
-                      </div>
-                    </div>
-                  </Card>
+
+                 
                 </div>
               </div>
 
               {/* Tabs para contenido adicional */}
               <Tabs defaultValue="activities" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-6 bg-white rounded-2xl border-2 border-vitalis-gold/20">
-                  <TabsTrigger value="activities" className="rounded-xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white">Actividades</TabsTrigger>
-                  <TabsTrigger value="analytics" className="rounded-xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white">Análisis</TabsTrigger>
-                  <TabsTrigger value="achievements" className="rounded-xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white">Logros</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-3 mb-8 bg-white rounded-3xl border-2 border-vitalis-gold/20 p-1.5">
+                  <TabsTrigger 
+                    value="activities" 
+                    className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                  >
+                    Actividades
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="analytics" 
+                    className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                  >
+                    Análisis
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="achievements" 
+                    className="rounded-2xl data-[state=active]:bg-vitalis-gold data-[state=active]:text-white transition-all duration-300 text-sm font-medium py-3"
+                  >
+                    Logros
+                  </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="activities" className="space-y-6">
+                <TabsContent value="activities" className="space-y-6 mt-6">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <Card className="p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
                       <h3 className="text-xl font-bold mb-4 text-vitalis-brown">Actividades Pendientes</h3>
@@ -262,7 +339,7 @@ const Index = () => {
                             Empezar
                           </Button>
                         </div>
-                        
+
                         <div className="flex items-center justify-between p-4 bg-vitalis-gold/10 rounded-2xl border-2 border-vitalis-gold/20">
                           <div className="flex items-center gap-3">
                             <span className="text-2xl">📖</span>
@@ -287,7 +364,7 @@ const Index = () => {
                             Según tu patrón de sueño, una sesión de relajación te ayudaría antes de dormir.
                           </p>
                         </div>
-                        
+
                         <div className="p-4 bg-vitalis-green/10 rounded-2xl border-2 border-vitalis-green/20">
                           <p className="font-medium text-vitalis-brown mb-2">🎯 Meta semanal</p>
                           <p className="text-sm text-vitalis-brown/80">
@@ -308,7 +385,7 @@ const Index = () => {
                       dataKey="mood"
                       color="#7FA650"
                     />
-                    
+
                     <ProgressChart
                       title="Progreso por Módulo"
                       data={activityData}
@@ -325,12 +402,12 @@ const Index = () => {
                         <div className="text-3xl font-bold text-vitalis-brown">287</div>
                         <p className="text-vitalis-brown/70">Actividades</p>
                       </div>
-                      
+
                       <div className="text-center p-6 bg-vitalis-green/10 rounded-2xl border-2 border-vitalis-green/20">
                         <div className="text-3xl font-bold text-vitalis-brown">21</div>
                         <p className="text-vitalis-brown/70">Días seguidos</p>
                       </div>
-                      
+
                       <div className="text-center p-6 bg-vitalis-cream/50 rounded-2xl border-2 border-vitalis-gold/20">
                         <div className="text-3xl font-bold text-vitalis-brown">4.1</div>
                         <p className="text-vitalis-brown/70">Estado promedio</p>
@@ -351,15 +428,15 @@ const Index = () => {
                 </TabsContent>
               </Tabs>
             </div>
-            
+
             <Footer />
           </>
         )}
-        
+
         <EmergencyButton />
-        <ChatModal 
-          isOpen={chatModalOpen} 
-          onClose={() => setChatModalOpen(false)} 
+        <ChatModal
+          isOpen={chatModalOpen}
+          onClose={() => setChatModalOpen(false)}
         />
       </div>
     </div>

@@ -207,7 +207,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-sm z-50 flex">
+    <div className="fixed inset-0 md:left-80 bg-slate-900/95 backdrop-blur-sm z-50 flex">
       {/* Avatar Selection Screen */}
       {!selectedAvatar && (
         <div className="w-full flex items-center justify-center p-6">
