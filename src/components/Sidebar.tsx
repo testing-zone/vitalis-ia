@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
     },
     { icon: User, label: 'Perfil', path: '/profile', active: location.pathname === '/profile' },
     { icon: Users, label: 'Amigos', path: '/contacts', active: location.pathname === '/contacts' },
-    { icon: Trophy, label: 'Logros', path: '#achievements', active: false, action: 'scroll' }
+    { icon: Trophy, label: 'Logros', path: '/achievements', active: location.pathname === '/achievements' }
   ];
 
   const handleNavigationClick = (item: any) => {
@@ -53,9 +53,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
       handleChatModalChange(true);
     } else if (item.action === 'openJourneyMap') {
       onOpenJourneyMap();
-    } else if (item.action === 'scroll') {
-      // Scroll to section logic
-      console.log(`Scrolling to ${item.label}`);
     }
     
     if (window.innerWidth < 768) onToggle();
@@ -187,38 +184,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
                   </p>
                 </div>
               </Card>
-            </div>
-
-            {/* Quick Stats */}
-            <div className="p-4">
-              <h3 className="text-sm font-semibold text-vitalis-brown/60 mb-3 uppercase tracking-wide">
-                Estadísticas Rápidas
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-vitalis-gold/20">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">🔥</span>
-                    <span className="text-sm font-medium text-vitalis-brown">Racha</span>
-                  </div>
-                  <span className="text-sm font-bold text-vitalis-gold">2 días</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-vitalis-gold/20">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">⭐</span>
-                    <span className="text-sm font-medium text-vitalis-brown">XP Total</span>
-                  </div>
-                  <span className="text-sm font-bold text-vitalis-gold">125</span>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-vitalis-gold/20">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg">🏆</span>
-                    <span className="text-sm font-medium text-vitalis-brown">Nivel</span>
-                  </div>
-                  <span className="text-sm font-bold text-vitalis-gold">12</span>
-                </div>
-              </div>
             </div>
           </ScrollArea>
         </div>
