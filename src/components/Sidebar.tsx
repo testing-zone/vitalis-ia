@@ -100,9 +100,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
           <div className="p-6 border-b border-vitalis-gold/20">
             <div className="flex items-center gap-3">
               <img 
-                src="/lovable-uploads/4e3febb6-c9a1-4006-b0a9-8f196c792c60.png" 
-                alt="VitalisIA" 
-                className="w-8 h-8"
+                src="/lovable-uploads/4e3febb6-c9a1-4006-b0a9-8f196c792c60.png"
+                alt="VitalisIA Capibara Logo"
+                className="w-10 h-10 rounded-full object-contain bg-white shadow-lg"
               />
               <h2 className="text-xl font-bold text-vitalis-brown">VitalisIA</h2>
             </div>
