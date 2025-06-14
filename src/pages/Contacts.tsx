@@ -164,12 +164,23 @@ const Contacts = () => {
       <div className="md:ml-80 transition-all duration-300">
         <div className="max-w-6xl mx-auto px-4 py-6">
           {/* Page Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Users className="w-8 h-8 text-vitalis-gold dark:text-yellow-400" />
-              <h1 className="text-3xl font-bold text-vitalis-brown dark:text-white">Mis Conexiones</h1>
+          <div className="mb-2">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center mb-1">
+              <div className="md:col-span-2">
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="w-8 h-8 text-vitalis-gold dark:text-yellow-400" />
+                  <h1 className="text-3xl font-bold text-vitalis-brown dark:text-white">Mis Conexiones</h1>
+                </div>
+                <p className="text-vitalis-brown/70 dark:text-gray-300">Cultiva relaciones significativas con tu comunidad de bienestar</p>
+              </div>
+              <div className="hidden md:block justify-self-end">
+                <img 
+                  src="/img/hugging.png" 
+                  alt="Huggy mascot" 
+                  className="w-[300px] h-[300px] object-contain"
+                />
+              </div>
             </div>
-            <p className="text-vitalis-brown/70 dark:text-gray-300">Cultiva relaciones significativas con tu comunidad de bienestar</p>
           </div>
 
           {/* Tabs Navigation */}
