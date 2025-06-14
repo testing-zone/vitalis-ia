@@ -47,6 +47,58 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
     return () => clearInterval(interval);
   }, []);
 
+  // Generate unique star animations
+  useEffect(() => {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'star-animations';
+    
+    let css = '';
+    
+    // Generate animations for 125 stars (reduced from 250)
+    for (let i = 0; i < 125; i++) {
+      const minOpacity = 0.1 + Math.random() * 0.2;
+      const maxOpacity = 0.8 + Math.random() * 0.2;
+      css += `
+        @keyframes starTwinkle${i} {
+          0%, 85%, 100% { 
+            opacity: ${minOpacity}; 
+            transform: scale(0.8); 
+          }
+          5%, 10% { 
+            opacity: ${maxOpacity}; 
+            transform: scale(1.2); 
+          }
+        }
+      `;
+    }
+    
+    // Generate constellation animations (reduced from 16 to 8)
+    for (let i = 0; i < 8; i++) {
+      css += `
+        @keyframes constellationGlow${i} {
+          0%, 90%, 100% { 
+            opacity: 0.3; 
+            box-shadow: 0 0 8px rgba(147, 197, 253, 0.4);
+          }
+          5%, 8% { 
+            opacity: 0.9; 
+            box-shadow: 0 0 16px rgba(147, 197, 253, 0.8), 0 0 32px rgba(147, 197, 253, 0.4);
+          }
+        }
+      `;
+    }
+    
+    styleElement.textContent = css;
+    document.head.appendChild(styleElement);
+    
+    return () => {
+      const existingStyle = document.getElementById('star-animations');
+      if (existingStyle) {
+        document.head.removeChild(existingStyle);
+      }
+    };
+  }, []);
+
   const journeyData: Activity[] = [
     { 
       id: 1, 
@@ -270,90 +322,102 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
     <div className="min-h-screen bg-gradient-to-b from-slate-900 via-indigo-900 to-purple-800 relative overflow-hidden">
       {/* Starfield - multiple layers of twinkling stars */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Large bright stars */}
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={`star-large-${i}`}
-            className="absolute rounded-full bg-white animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 70}%`,
-              width: '3px',
-              height: '3px',
-              animationDelay: `${Math.random() * 120}s`,
-              animationDuration: `${Math.random() * 60 + 90}s`,
-              boxShadow: '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4)',
-              opacity: 0.8 + Math.random() * 0.2
-            }}
-          />
-        ))}
+        {/* Large bright stars - only in upper area */}
+        {[...Array(25)].map((_, i) => {
+          const duration = 30 + Math.random() * 30; // 30-60 seconds
+          const delay = Math.random() * 60; // 0-60 seconds delay
+          return (
+            <div
+              key={`star-large-${i}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 50}%`, // Only upper 50% of screen
+                width: '3px',
+                height: '3px',
+                boxShadow: '0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(255, 255, 255, 0.4)',
+                opacity: 0.3,
+                animation: `starTwinkle${i} ${duration}s ease-in-out infinite`,
+                animationDelay: `${delay}s`
+              }}
+            />
+          );
+        })}
 
-        {/* Medium stars */}
-        {[...Array(80)].map((_, i) => (
-          <div
-            key={`star-medium-${i}`}
-            className="absolute rounded-full bg-white animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 80}%`,
-              width: '2px',
-              height: '2px',
-              animationDelay: `${Math.random() * 150}s`,
-              animationDuration: `${Math.random() * 80 + 100}s`,
-              boxShadow: '0 0 4px rgba(255, 255, 255, 0.6), 0 0 8px rgba(255, 255, 255, 0.3)',
-              opacity: 0.6 + Math.random() * 0.3
-            }}
-          />
-        ))}
+        {/* Medium stars - only in upper area */}
+        {[...Array(40)].map((_, i) => {
+          const duration = 40 + Math.random() * 40; // 40-80 seconds
+          const delay = Math.random() * 80; // 0-80 seconds delay
+          return (
+            <div
+              key={`star-medium-${i}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 60}%`, // Only upper 60% of screen
+                width: '2px',
+                height: '2px',
+                boxShadow: '0 0 4px rgba(255, 255, 255, 0.6), 0 0 8px rgba(255, 255, 255, 0.3)',
+                opacity: 0.2,
+                animation: `starTwinkle${i + 25} ${duration}s ease-in-out infinite`,
+                animationDelay: `${delay}s`
+              }}
+            />
+          );
+        })}
 
-        {/* Small distant stars */}
-        {[...Array(120)].map((_, i) => (
-          <div
-            key={`star-small-${i}`}
-            className="absolute rounded-full bg-white animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 90}%`,
-              width: '1px',
-              height: '1px',
-              animationDelay: `${Math.random() * 200}s`,
-              animationDuration: `${Math.random() * 100 + 120}s`,
-              boxShadow: '0 0 2px rgba(255, 255, 255, 0.4)',
-              opacity: 0.4 + Math.random() * 0.4
-            }}
-          />
-        ))}
+        {/* Small distant stars - only in upper area */}
+        {[...Array(60)].map((_, i) => {
+          const duration = 50 + Math.random() * 50; // 50-100 seconds
+          const delay = Math.random() * 100; // 0-100 seconds delay
+          return (
+            <div
+              key={`star-small-${i}`}
+              className="absolute rounded-full bg-white"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 70}%`, // Only upper 70% of screen
+                width: '1px',
+                height: '1px',
+                boxShadow: '0 0 2px rgba(255, 255, 255, 0.4)',
+                opacity: 0.1,
+                animation: `starTwinkle${i + 65} ${duration}s ease-in-out infinite`,
+                animationDelay: `${delay}s`
+              }}
+            />
+          );
+        })}
 
-        {/* Constellation-like connected stars */}
-        {[...Array(8)].map((_, i) => (
+        {/* Constellation-like connected stars - only in upper area */}
+        {[...Array(4)].map((_, i) => (
           <div
             key={`constellation-${i}`}
             className="absolute"
             style={{
-              left: `${10 + i * 12}%`,
-              top: `${10 + Math.random() * 40}%`
+              left: `${20 + i * 20}%`,
+              top: `${10 + Math.random() * 30}%` // Only upper 40% of screen
             }}
           >
             <div
-              className="absolute rounded-full bg-blue-200 animate-pulse"
+              className="absolute rounded-full bg-blue-200"
               style={{
                 width: '2px',
                 height: '2px',
-                boxShadow: '0 0 8px rgba(147, 197, 253, 0.8)',
-                animationDelay: `${i * 10}s`,
-                animationDuration: '80s'
+                opacity: 0.3,
+                animation: `constellationGlow${i} 45s ease-in-out infinite`,
+                animationDelay: `${i * 5}s`
               }}
             />
             <div
-              className="absolute rounded-full bg-blue-200 animate-pulse"
+              className="absolute rounded-full bg-blue-200"
               style={{
                 left: '15px',
                 top: '10px',
                 width: '2px',
                 height: '2px',
-                boxShadow: '0 0 8px rgba(147, 197, 253, 0.8)',
-                animationDelay: `${i * 10 + 15}s`,
-                animationDuration: '80s'
+                opacity: 0.3,
+                animation: `constellationGlow${i + 4} 45s ease-in-out infinite`,
+                animationDelay: `${i * 5 + 10}s`
               }}
             />
             <div
@@ -379,9 +443,8 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
             key={`cloud-wisp-${i}`}
             className="absolute opacity-10"
             style={{
-              left: `${i * 20 + Math.sin(windOffset * 0.002 + i) * 10}%`,
+              left: `${i * 20 + 10}%`,
               top: `${60 + i * 5}%`,
-              transform: `translateX(${Math.sin(windOffset * 0.001 + i) * 20}px)`,
               fontSize: '4rem',
               color: 'rgba(255, 255, 255, 0.1)'
             }}
@@ -401,31 +464,13 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
         {[...Array(15)].map((_, i) => (
           <div
             key={`mist-${i}`}
-            className="absolute rounded-full bg-white/5 animate-pulse"
+            className="absolute rounded-full bg-white/5"
             style={{
               left: `${Math.random() * 100}%`,
               bottom: `${Math.random() * 100 + 20}px`,
               width: `${Math.random() * 40 + 20}px`,
               height: `${Math.random() * 40 + 20}px`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${Math.random() * 4 + 3}s`,
-              transform: `translateY(${Math.sin(windOffset * 0.003 + i) * 10}px)`,
               filter: 'blur(8px)'
-            }}
-          />
-        ))}
-
-        {/* Shooting stars */}
-        {[...Array(3)].map((_, i) => (
-          <div
-            key={`shooting-star-${i}`}
-            className="absolute w-16 h-px bg-gradient-to-r from-white via-blue-200 to-transparent opacity-60"
-            style={{
-              left: `${20 + i * 30}%`,
-              top: `${10 + i * 15}%`,
-              transform: `rotate(-30deg)`,
-              animation: `shimmer ${4 + i}s ease-in-out infinite`,
-              animationDelay: `${i * 2}s`
             }}
           />
         ))}
@@ -486,7 +531,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
         <div className="grid grid-cols-4 gap-3 mb-8">
           <Card className="p-3 bg-slate-800/40 backdrop-blur-md border-slate-600/50 ghibli-shadow hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-slate-700/40">
             <div className="flex flex-col items-center gap-1">
-              <CheckCircle className="w-5 h-5 text-emerald-400 animate-pulse" />
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Completadas</p>
                 <p className="font-bold text-white text-sm">2/6</p>
@@ -496,7 +541,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
           
           <Card className="p-3 bg-slate-800/40 backdrop-blur-md border-slate-600/50 ghibli-shadow hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-slate-700/40">
             <div className="flex flex-col items-center gap-1">
-              <Zap className="w-5 h-5 text-amber-400 animate-bounce" />
+              <Zap className="w-5 h-5 text-amber-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">XP Total</p>
                 <p className="font-bold text-white text-sm">125</p>
@@ -506,7 +551,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
           
           <Card className="p-3 bg-slate-800/40 backdrop-blur-md border-slate-600/50 ghibli-shadow hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-slate-700/40">
             <div className="flex flex-col items-center gap-1">
-              <Calendar className="w-5 h-5 text-sky-400 animate-pulse" />
+              <Calendar className="w-5 h-5 text-sky-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Día Actual</p>
                 <p className="font-bold text-white text-sm">2</p>
@@ -516,7 +561,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
           
           <Card className="p-3 bg-slate-800/40 backdrop-blur-md border-slate-600/50 ghibli-shadow hover:shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-slate-700/40">
             <div className="flex flex-col items-center gap-1">
-              <Trophy className="w-5 h-5 text-yellow-400 animate-bounce" />
+              <Trophy className="w-5 h-5 text-yellow-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Racha</p>
                 <p className="font-bold text-white text-sm">2 días</p>
@@ -603,7 +648,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
               >
                 {/* Ethereal mist platform under each activity */}
                 <div 
-                  className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 rounded-full bg-slate-700/20 animate-pulse pointer-events-none"
+                  className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 rounded-full bg-slate-700/20 pointer-events-none"
                   style={{
                     width: '80px',
                     height: '25px',
@@ -613,14 +658,12 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
 
                 {/* Stellar constellation glow effect */}
                 <div className={`
-                  absolute inset-0 rounded-full animate-ping
+                  absolute inset-0 rounded-full
                   ${!activity.locked && !activity.completed ? 'opacity-50' : 'opacity-0'}
                 `} 
                 style={{ 
                   width: '100px', 
                   height: '100px',
-                  animationDuration: '4s',
-                  animationDelay: `${pulseDelay}s`,
                   background: `radial-gradient(circle, ${
                     activity.completed ? 'rgba(34, 197, 94, 0.2)' : 
                     activity.locked ? 'rgba(107, 114, 128, 0.1)' : 
@@ -637,7 +680,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
                   flex items-center justify-center text-3xl md:text-4xl lg:text-5xl
                   transform transition-all duration-700 hover:scale-130 hover:-translate-y-4
                   ${!activity.locked ? 'hover:shadow-2xl cursor-pointer' : 'cursor-not-allowed'}
-                  ${activity.completed ? 'ring-4 ring-emerald-400/50 animate-pulse' : ''}
+                  ${activity.completed ? 'ring-4 ring-emerald-400/50' : ''}
                   backdrop-blur-sm border-slate-600/60
                 `}
                 style={{
@@ -653,7 +696,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
                   
                   {/* Enhanced XP Badge with stellar styling */}
                   {!activity.locked && (
-                    <div className="absolute -top-4 -right-4 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white text-sm font-bold rounded-full w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-3 border-slate-800 shadow-2xl animate-pulse backdrop-blur-sm">
+                    <div className="absolute -top-4 -right-4 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white text-sm font-bold rounded-full w-12 h-12 md:w-14 md:h-14 flex items-center justify-center border-3 border-slate-800 shadow-2xl backdrop-blur-sm">
                       <span className="drop-shadow-lg text-xs md:text-sm">{activity.xp}</span>
                     </div>
                   )}

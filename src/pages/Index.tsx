@@ -28,6 +28,7 @@ const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [journeyMapOpen, setJourneyMapOpen] = useState(false);
+  const [sidebarChatOpen, setSidebarChatOpen] = useState(false);
 
   // Datos de ejemplo para los gráficos
   const moodData = [
@@ -96,6 +97,7 @@ const Index = () => {
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
         onOpenJourneyMap={() => setJourneyMapOpen(true)}
+        onChatStateChange={(isOpen) => setSidebarChatOpen(isOpen)}
       />
 
       {/* Main content with sidebar offset */}

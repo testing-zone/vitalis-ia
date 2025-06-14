@@ -1,3 +1,37 @@
+/* Custom slow star twinkling animation */
+@keyframes slow-star-twinkle {
+  0%, 90%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  5%, 15% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes very-slow-star-twinkle {
+  0%, 95%, 100% {
+    opacity: 0.2;
+    transform: scale(0.7);
+  }
+  2.5%, 7.5% {
+    opacity: 0.9;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes constellation-slow-glow {
+  0%, 85%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 8px rgba(147, 197, 253, 0.4);
+  }
+  7.5%, 12.5% {
+    opacity: 0.9;
+    box-shadow: 0 0 16px rgba(147, 197, 253, 0.8), 0 0 32px rgba(147, 197, 253, 0.4);
+  }
+}
+
 /* Journey Map Animations */
 @keyframes dash {
   to {
@@ -187,25 +221,38 @@
   animation: cloud-bounce 4s ease-in-out infinite;
 }
 
+/* Custom slow star utilities */
+.slow-star-twinkle {
+  animation: slow-star-twinkle 15s ease-in-out infinite;
+}
+
+.very-slow-star-twinkle {
+  animation: very-slow-star-twinkle 20s ease-in-out infinite;
+}
+
+.constellation-slow-glow {
+  animation: constellation-slow-glow 18s ease-in-out infinite;
+}
+
 /* Starry night utilities */
 .star-twinkle {
-  animation: star-twinkle 60s ease-in-out infinite;
+  animation: star-twinkle 15s ease-in-out infinite;
 }
 
 .constellation-glow {
-  animation: constellation-glow 80s ease-in-out infinite;
+  animation: constellation-glow 15s ease-in-out infinite;
 }
 
 .dawn-glow {
-  animation: dawn-glow 120s ease-in-out infinite;
+  animation: dawn-glow 30s ease-in-out infinite;
 }
 
 .ethereal-drift {
-  animation: ethereal-drift 150s ease-in-out infinite;
+  animation: ethereal-drift 45s ease-in-out infinite;
 }
 
 .stellar-pulse {
-  animation: stellar-pulse 45s ease-in-out infinite;
+  animation: stellar-pulse 15s ease-in-out infinite;
 }
 
 .shimmer-effect {

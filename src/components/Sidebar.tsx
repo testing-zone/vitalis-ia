@@ -20,9 +20,10 @@ interface SidebarProps {
   isOpen: boolean;
   onToggle: () => void;
   onOpenJourneyMap: () => void;
+  onChatStateChange?: (isOpen: boolean) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, onChatStateChange }) => {
   const location = useLocation();
   const [chatModalOpen, setChatModalOpen] = useState(false);
   
@@ -49,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
 
   const handleNavigationClick = (item: any) => {
     if (item.action === 'openChat') {
-      setChatModalOpen(true);
+      handleChatModalChange(true);
     } else if (item.action === 'openJourneyMap') {
       onOpenJourneyMap();
     } else if (item.action === 'scroll') {
@@ -58,6 +59,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
     }
     
     if (window.innerWidth < 768) onToggle();
+  };
+
+  const handleChatModalChange = (isOpen: boolean) => {
+    setChatModalOpen(isOpen);
+    onChatStateChange?.(isOpen);
   };
 
   return (
@@ -122,10 +128,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
                       key={index}
                       onClick={() => handleNavigationClick(item)}
                       className={`
-                        w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-200 text-left
+                        w-full flex items-center gap-3 p-3 rounded-xl transition-all duration-300 text-left
                         ${item.active 
-                          ? 'bg-vitalis-gold text-white shadow-md' 
-                          : 'text-vitalis-brown hover:bg-vitalis-gold/10'
+                          ? 'bg-vitalis-gold text-white shadow-xl shadow-vitalis-gold/30 transform scale-105 border-2 border-vitalis-gold-dark' 
+                          : 'text-vitalis-brown hover:bg-vitalis-gold/10 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
                         }
                       `}
                     >
@@ -137,10 +143,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
                       key={index}
                       to={item.path}
                       className={`
-                        flex items-center gap-3 p-3 rounded-xl transition-all duration-200
+                        flex items-center gap-3 p-3 rounded-xl transition-all duration-300
                         ${item.active 
-                          ? 'bg-vitalis-gold text-white shadow-md' 
-                          : 'text-vitalis-brown hover:bg-vitalis-gold/10'
+                          ? 'bg-vitalis-gold text-white shadow-xl shadow-vitalis-gold/30 transform scale-105 border-2 border-vitalis-gold-dark' 
+                          : 'text-vitalis-brown hover:bg-vitalis-gold/10 hover:shadow-md hover:transform hover:scale-102 border-2 border-transparent'
                         }
                       `}
                       onClick={() => {
@@ -221,7 +227,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap })
       {/* Chat Modal */}
       <ChatModal 
         isOpen={chatModalOpen} 
-        onClose={() => setChatModalOpen(false)} 
+        onClose={() => handleChatModalChange(false)} 
       />
     </>
   );
