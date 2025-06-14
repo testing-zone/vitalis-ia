@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Footer from '@/components/Footer';
 import Avatar from '@/components/Avatar';
 import ModuleCard from '@/components/ModuleCard';
@@ -13,21 +13,63 @@ import Sidebar from '@/components/Sidebar';
 import EmergencyButton from '@/components/EmergencyButton';
 import ChatModal from '@/components/ChatModal';
 import JourneyMapView from '@/components/JourneyMapView';
+import DailyExercisePopup from '@/components/DailyExercisePopup';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Link } from 'react-router-dom';
 import { Users, MessageCircle } from 'lucide-react';
+import { useDailyExercise, DailyExerciseAnswer } from '@/hooks/useDailyExercise';
+import { useJourneyActivities } from '@/hooks/useJourneyActivities';
 
 const Index = () => {
   const [currentLevel] = useState(12);
-  const [currentXP] = useState(2340);
+  const [currentXP, setCurrentXP] = useState(2340);
   const [nextLevelXP] = useState(2500);
   const [avatarMood, setAvatarMood] = useState<'happy' | 'neutral' | 'sad' | 'excited'>('happy');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [journeyMapOpen, setJourneyMapOpen] = useState(false);
   const [sidebarChatOpen, setSidebarChatOpen] = useState(false);
+
+  // Daily exercise hook
+  const { shouldShowPopup, exerciseState, completeExercise, dismissPopup } = useDailyExercise();
+  
+  // Journey activities hook
+  const { 
+    activities, 
+    completeActivity, 
+    getCompletedCount, 
+    getTotalCount, 
+    getUncompletedActivities 
+  } = useJourneyActivities();
+
+  // Handle daily exercise completion
+  const handleExerciseComplete = (answers: DailyExerciseAnswer[]) => {
+    completeExercise(answers);
+    
+    // Award XP for completing daily exercise
+    setCurrentXP(prev => prev + 100);
+    
+    // Complete a random uncompleted activity from journey map
+    const uncompletedActivities = getUncompletedActivities();
+    if (uncompletedActivities.length > 0) {
+      const randomActivity = uncompletedActivities[Math.floor(Math.random() * uncompletedActivities.length)];
+      completeActivity(randomActivity.id);
+    }
+    
+    // Update mood based on answers if available
+    const moodAnswer = answers.find(a => a.questionId === 1);
+    if (moodAnswer && typeof moodAnswer.answer === 'number') {
+      if (moodAnswer.answer >= 4) {
+        setAvatarMood('happy');
+      } else if (moodAnswer.answer >= 3) {
+        setAvatarMood('neutral');
+      } else {
+        setAvatarMood('sad');
+      }
+    }
+  };
 
   // Datos de ejemplo para los gráficos
   const moodData = [
@@ -89,8 +131,19 @@ const Index = () => {
     { title: 'Maestro Zen', description: '100 días de mindfulness', icon: '🍃', unlocked: false, rarity: 'legendary' as const }
   ];
 
+  // Update stats card with real data from journey activities
+  const completedActivitiesCount = getCompletedCount();
+  const totalActivitiesCount = getTotalCount();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
+      {/* Daily Exercise Popup */}
+      <DailyExercisePopup
+        isOpen={shouldShowPopup}
+        onClose={dismissPopup}
+        onComplete={handleExerciseComplete}
+      />
+
       {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -118,7 +171,12 @@ const Index = () => {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h1 className="text-3xl font-bold text-vitalis-brown mb-2">¡Hola, Alex! 👋</h1>
-                        <p className="text-vitalis-brown/70">¿Listo para otro día increíble?</p>
+                        <p className="text-vitalis-brown/70">
+                          {exerciseState?.completed 
+                            ? "¡Excelente! Has completado tu ejercicio diario 🎉" 
+                            : "¿Listo para otro día increíble?"
+                          }
+                        </p>
                       </div>
                       <Avatar level={currentLevel} mood={avatarMood} />
                     </div>
@@ -139,8 +197,7 @@ const Index = () => {
                 </div>
 
               </div>
-              {/* Stats Cards - Extendidos horizontalmente en una sola fila */}
-              {/* Stats Cards - Ocupan todo el espacio horizontal */}
+              {/* Stats Cards - Updated with real data */}
               <div className="flex flex-col md:flex-row w-full gap-4">
                 <div className="w-full md:flex-1">
                   <StatsCard
@@ -163,10 +220,10 @@ const Index = () => {
                 <div className="w-full md:flex-1">
                   <StatsCard
                     title="Actividades"
-                    value="3/5"
-                    change="2 pendientes"
+                    value={`${completedActivitiesCount}/${totalActivitiesCount}`}
+                    change={`${totalActivitiesCount - completedActivitiesCount} pendientes`}
                     icon="✅"
-                    trend="neutral"
+                    trend={completedActivitiesCount === totalActivitiesCount ? "up" : "neutral"}
                   />
                 </div>
                 <div className="w-full md:flex-1">
@@ -179,7 +236,6 @@ const Index = () => {
                   />
                 </div>
               </div>
-
 
               {/* Video Widget Section */}
               <Card className="w-full p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
