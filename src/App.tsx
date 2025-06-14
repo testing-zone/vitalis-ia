@@ -11,6 +11,7 @@ import Contacts from "./pages/Contacts";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
+import Achievements from "./pages/Achievements";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/achievements" element={<Achievements />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
