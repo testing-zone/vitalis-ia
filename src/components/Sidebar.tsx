@@ -109,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
               }}
             >
               <img 
-                src="/lovable-uploads/4e3febb6-c9a1-4006-b0a9-8f196c792c60.png"
+                src="/img/leaf.png"
                 alt="VitalisIA Capibara Logo"
                 className="w-10 h-10 rounded-full object-contain bg-white shadow-lg"
               />
