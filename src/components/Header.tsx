@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Bell, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,7 +7,7 @@ const Header: React.FC = () => {
   const location = useLocation();
   
   return (
-    <header className="bg-white border-b-2 border-vitalis-gold/20 px-4 py-3 sticky top-0 z-50">
+    <header className="bg-white border-b-2 border-vitalis-gold/20 px-4 py-3 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
           <img 
