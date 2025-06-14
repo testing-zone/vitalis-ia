@@ -1,0 +1,239 @@
+/* Journey Map Animations */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -23;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes gentle-sway {
+  0%, 100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes butterfly-flutter {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(5deg);
+  }
+  75% {
+    transform: translateY(5px) rotate(-5deg);
+  }
+}
+
+/* Starry night specific animations */
+@keyframes star-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.4);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.8), 0 0 24px rgba(255, 255, 255, 0.4);
+  }
+}
+
+@keyframes constellation-glow {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 8px rgba(147, 197, 253, 0.4);
+  }
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 16px rgba(147, 197, 253, 0.8), 0 0 32px rgba(147, 197, 253, 0.4);
+  }
+}
+
+@keyframes dawn-glow {
+  0%, 100% {
+    opacity: 0.1;
+    transform: scaleY(0.8);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scaleY(1.2);
+  }
+}
+
+@keyframes ethereal-drift {
+  0% {
+    transform: translateX(0px) translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateX(10px) translateY(-5px) rotate(1deg);
+  }
+  66% {
+    transform: translateX(-5px) translateY(5px) rotate(-1deg);
+  }
+  100% {
+    transform: translateX(0px) translateY(0px) rotate(0deg);
+  }
+}
+
+@keyframes stellar-pulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 20px rgba(59, 130, 246, 0.2),
+      0 0 40px rgba(59, 130, 246, 0.1),
+      inset 0 0 10px rgba(59, 130, 246, 0.05);
+  }
+  50% {
+    box-shadow: 
+      0 0 40px rgba(59, 130, 246, 0.4),
+      0 0 80px rgba(59, 130, 246, 0.2),
+      inset 0 0 20px rgba(59, 130, 246, 0.1);
+  }
+}
+
+/* Cloud-walking specific animations */
+@keyframes cloud-drift {
+  0% {
+    transform: translateX(0px) scale(1);
+  }
+  50% {
+    transform: translateX(20px) scale(1.05);
+  }
+  100% {
+    transform: translateX(0px) scale(1);
+  }
+}
+
+@keyframes celestial-twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes light-ray {
+  0% {
+    opacity: 0.2;
+    transform: scaleY(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scaleY(1.2);
+  }
+  100% {
+    opacity: 0.2;
+    transform: scaleY(0.8);
+  }
+}
+
+@keyframes cloud-bounce {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(2deg);
+  }
+}
+
+/* Ghibli-style utilities */
+.ghibli-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.grass-sway {
+  animation: gentle-sway 3s ease-in-out infinite;
+}
+
+.butterfly-move {
+  animation: butterfly-flutter 2s ease-in-out infinite;
+}
+
+.cloud-drift {
+  animation: cloud-drift 6s ease-in-out infinite;
+}
+
+.celestial-twinkle {
+  animation: celestial-twinkle 3s ease-in-out infinite;
+}
+
+.light-ray-effect {
+  animation: light-ray 4s ease-in-out infinite;
+}
+
+.cloud-bounce {
+  animation: cloud-bounce 4s ease-in-out infinite;
+}
+
+/* Starry night utilities */
+.star-twinkle {
+  animation: star-twinkle 60s ease-in-out infinite;
+}
+
+.constellation-glow {
+  animation: constellation-glow 80s ease-in-out infinite;
+}
+
+.dawn-glow {
+  animation: dawn-glow 120s ease-in-out infinite;
+}
+
+.ethereal-drift {
+  animation: ethereal-drift 150s ease-in-out infinite;
+}
+
+.stellar-pulse {
+  animation: stellar-pulse 45s ease-in-out infinite;
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced shadows for depth */
+.ghibli-shadow {
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Celestial glow effects */
+.celestial-glow {
+  box-shadow: 
+    0 0 20px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.2),
+    0 0 60px rgba(59, 130, 246, 0.1);
+}
+
+/* Starry night glow effects */
+.starry-glow {
+  box-shadow: 
+    0 0 30px rgba(148, 163, 184, 0.3),
+    0 0 60px rgba(148, 163, 184, 0.2),
+    0 0 90px rgba(148, 163, 184, 0.1);
+} 
