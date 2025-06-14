@@ -15,8 +15,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { X, Heart, Activity, Brain, Utensils, Eye } from 'lucide-react';
+import { 
+  X, Heart, Activity, Brain, Utensils, Eye,
+  Frown, Meh, Smile, Star, Zap, Battery, Rocket,
+  HeartPulse, Sparkles, Flame, Cloud, Sun, Moon,
+  Wind, Droplets
+} from 'lucide-react';
 import { DailyExerciseAnswer } from '@/hooks/useDailyExercise';
+
+interface ScaleOption {
+  icon: React.ReactNode;
+  label: string;
+  value: number;
+}
 
 interface Question {
   id: number;
@@ -26,7 +37,7 @@ interface Question {
   icon: React.ReactNode;
   answerType: 'emoji-scale' | 'radio' | 'text';
   options?: string[];
-  emojiOptions?: { emoji: string; label: string; value: number }[];
+  emojiOptions?: ScaleOption[];
   capybaraImage: string;
 }
 
@@ -35,15 +46,15 @@ const questions: Question[] = [
     id: 1,
     type: 'mood',
     title: '¿Cómo te sientes hoy?',
-    description: 'Toca el emoji que mejor represente tu estado de ánimo',
+    description: 'Selecciona el icono que mejor represente tu estado de ánimo',
     icon: <Heart className="w-6 h-6" />,
     answerType: 'emoji-scale',
     emojiOptions: [
-      { emoji: '😢', label: 'Muy mal', value: 1 },
-      { emoji: '😕', label: 'Mal', value: 2 },
-      { emoji: '😐', label: 'Regular', value: 3 },
-      { emoji: '😊', label: 'Bien', value: 4 },
-      { emoji: '🤩', label: 'Excelente', value: 5 }
+      { icon: <Frown className="w-8 h-8 text-red-500" />, label: 'Muy mal', value: 1 },
+      { icon: <Meh className="w-8 h-8 text-orange-500" />, label: 'Mal', value: 2 },
+      { icon: <Smile className="w-8 h-8 text-yellow-500" />, label: 'Regular', value: 3 },
+      { icon: <HeartPulse className="w-8 h-8 text-green-500" />, label: 'Bien', value: 4 },
+      { icon: <Sparkles className="w-8 h-8 text-vitalis-gold" />, label: 'Excelente', value: 5 }
     ],
     capybaraImage: '/img/star.png'
   },
@@ -55,11 +66,11 @@ const questions: Question[] = [
     icon: <Activity className="w-6 h-6" />,
     answerType: 'emoji-scale',
     emojiOptions: [
-      { emoji: '🔋', label: 'Muy bajo', value: 1 },
-      { emoji: '🔋', label: 'Bajo', value: 2 },
-      { emoji: '⚡', label: 'Normal', value: 3 },
-      { emoji: '⚡', label: 'Alto', value: 4 },
-      { emoji: '🔥', label: 'Muy alto', value: 5 }
+      { icon: <Moon className="w-8 h-8 text-gray-400" />, label: 'Muy bajo', value: 1 },
+      { icon: <Cloud className="w-8 h-8 text-blue-400" />, label: 'Bajo', value: 2 },
+      { icon: <Sun className="w-8 h-8 text-yellow-500" />, label: 'Normal', value: 3 },
+      { icon: <Zap className="w-8 h-8 text-orange-500" />, label: 'Alto', value: 4 },
+      { icon: <Rocket className="w-8 h-8 text-vitalis-gold" />, label: 'Muy alto', value: 5 }
     ],
     capybaraImage: '/img/jumping.png'
   },
@@ -71,11 +82,11 @@ const questions: Question[] = [
     icon: <Brain className="w-6 h-6" />,
     answerType: 'emoji-scale',
     emojiOptions: [
-      { emoji: '😌', label: 'Muy relajado', value: 1 },
-      { emoji: '😊', label: 'Relajado', value: 2 },
-      { emoji: '😐', label: 'Normal', value: 3 },
-      { emoji: '😬', label: 'Estresado', value: 4 },
-      { emoji: '😰', label: 'Muy estresado', value: 5 }
+      { icon: <Droplets className="w-8 h-8 text-blue-400" />, label: 'Muy relajado', value: 1 },
+      { icon: <Wind className="w-8 h-8 text-green-400" />, label: 'Relajado', value: 2 },
+      { icon: <Sun className="w-8 h-8 text-yellow-500" />, label: 'Normal', value: 3 },
+      { icon: <Flame className="w-8 h-8 text-orange-500" />, label: 'Estresado', value: 4 },
+      { icon: <Zap className="w-8 h-8 text-red-500" />, label: 'Muy estresado', value: 5 }
     ],
     capybaraImage: '/img/hottube.png'
   },
@@ -264,7 +275,9 @@ const DailyExercisePopup: React.FC<DailyExercisePopupProps> = ({
                                       active:scale-95 flex items-center justify-center
                                     `}
                                   >
-                                    <span className="text-xl md:text-2xl">{option.emoji}</span>
+                                    <div className="transform transition-transform duration-300 hover:scale-110">
+                                      {option.icon}
+                                    </div>
                                     {answers[question.id] === option.value && (
                                       <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2">
                                         <div className="w-2 h-2 bg-vitalis-gold rounded-full animate-pulse" />
