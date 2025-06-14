@@ -1,52 +1,45 @@
-
 import React from 'react';
-import { Bell, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link, useLocation } from 'react-router-dom';
+import { Bell, Settings, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Header: React.FC = () => {
-  const location = useLocation();
-  
+const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
-    <header className="bg-white border-b-2 border-vitalis-gold/20 px-4 py-3 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-          <img 
-            src="/lovable-uploads/4e3febb6-c9a1-4006-b0a9-8f196c792c60.png" 
-            alt="VitalisIA" 
-            className="w-10 h-10"
-          />
-          <h1 className="text-2xl font-bold text-vitalis-brown">VitalisIA</h1>
-        </Link>
-        
-        <div className="flex items-center gap-3">
-          <Link to="/notifications">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`rounded-full ${location.pathname === '/notifications' ? 'bg-vitalis-gold/10' : ''}`}
-            >
+    <header className="bg-white border-b-2 border-vitalis-gold/20 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity duration-200"
+            onClick={handleLogoClick}
+          >
+            <div className="w-10 h-10 bg-gradient-to-r from-vitalis-gold to-vitalis-green rounded-full flex items-center justify-center shadow-lg">
+              <span className="text-white font-bold text-lg">V</span>
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-vitalis-brown">VitalisIA</h1>
+              <p className="text-xs text-vitalis-green">Tu compañero de bienestar</p>
+            </div>
+          </div>
+
+          {/* Navigation Actions */}
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" className="rounded-full">
               <Bell className="w-5 h-5 text-vitalis-brown" />
             </Button>
-          </Link>
-          <Link to="/settings">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`rounded-full ${location.pathname === '/settings' ? 'bg-vitalis-gold/10' : ''}`}
-            >
+            <Button variant="ghost" size="sm" className="rounded-full">
               <Settings className="w-5 h-5 text-vitalis-brown" />
             </Button>
-          </Link>
-          <Link to="/profile">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className={`rounded-full ${location.pathname === '/profile' ? 'bg-vitalis-gold/10' : ''}`}
-            >
+            <Button variant="ghost" size="sm" className="rounded-full">
               <User className="w-5 h-5 text-vitalis-brown" />
             </Button>
-          </Link>
+          </div>
         </div>
       </div>
     </header>
