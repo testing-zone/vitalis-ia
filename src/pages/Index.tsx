@@ -118,6 +118,8 @@ const Index = () => {
           <CapybaraCompanion level={currentLevel} mood={avatarMood} />
         </div>
 
+        
+
         {/* Stats Cards y Quick Actions - Mejorado para desktop */}
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-4">
           <StatsCard 
@@ -209,6 +211,102 @@ const Index = () => {
             </Card>
           </div>
         </div>
+        {/* Video Widget Section */}
+        <Card className="w-full p-6 bg-white rounded-3xl border-2 border-vitalis-gold/20 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-vitalis-brown">Reflexión del Día</h2>
+            <div className="flex items-center gap-2 text-sm text-vitalis-brown/70">
+              <span>Desliza para ver más</span>
+              <svg className="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </div>
+          
+          <div className="relative">
+            <div className="flex gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory">
+              {/* Video 1 */}
+              <div className="flex-none w-[300px] snap-center">
+                <div className="relative w-full pt-[56.25%] mb-3 group">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                    src="https://www.youtube.com/embed/FS1jdi51U8I"
+                    title="Mindfulness para principiantes"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-vitalis-brown">Mindfulness para principiantes</h3>
+                  <p className="text-xs text-vitalis-brown/70">5 minutos • Principiante</p>
+                </div>
+              </div>
+
+              {/* Video 2 */}
+              <div className="flex-none w-[300px] snap-center">
+                <div className="relative w-full pt-[56.25%] mb-3 group">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                    src="https://www.youtube.com/embed/b5w7DkseJjc"
+                    title="Meditación guiada"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-vitalis-brown">Meditación guiada de 10 minutos</h3>
+                  <p className="text-xs text-vitalis-brown/70">10 minutos • Intermedio</p>
+                </div>
+              </div>
+
+              {/* Video 3 */}
+              <div className="flex-none w-[300px] snap-center">
+                <div className="relative w-full pt-[56.25%] mb-3 group">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                    src="https://www.youtube.com/embed/sPbwiBHFgSU"
+                    title="Gratitud diaria"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-vitalis-brown">Practicando la gratitud diaria</h3>
+                  <p className="text-xs text-vitalis-brown/70">8 minutos • Todos los niveles</p>
+                </div>
+              </div>
+
+              {/* Video 4 */}
+              <div className="flex-none w-[300px] snap-center">
+                <div className="relative w-full pt-[56.25%] mb-3 group">
+                  <iframe
+                    className="absolute top-0 left-0 w-full h-full rounded-2xl transition-transform duration-300 group-hover:scale-[1.02]"
+                    src="https://www.youtube.com/embed/rzT51IXkiS4"
+                    title="Respiración consciente"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 rounded-2xl" />
+                </div>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-medium text-vitalis-brown">Técnicas de respiración consciente</h3>
+                  <p className="text-xs text-vitalis-brown/70">6 minutos • Principiante</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Scroll Indicators */}
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-2 h-2 rounded-full bg-vitalis-gold" />
+              <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+              <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+              <div className="w-2 h-2 rounded-full bg-vitalis-gold/30" />
+            </div>
+          </div>
+        </Card>
 
         {/* Tabs para contenido adicional */}
         <Tabs defaultValue="activities" className="w-full">
