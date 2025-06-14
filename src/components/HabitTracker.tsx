@@ -41,8 +41,7 @@ const HabitTracker: React.FC = () => {
           <div
             key={habit.id}
             onClick={() => toggleHabit(habit.id)}
-            className={`
-              flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300
+            className={`              flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-300
               ${habit.completed 
                 ? 'bg-vitalis-green/20 border-2 border-vitalis-green' 
                 : 'bg-gray-50 border-2 border-gray-200 hover:border-vitalis-gold'
@@ -72,3 +71,4 @@ const HabitTracker: React.FC = () => {
 };
 
 export default HabitTracker;
+

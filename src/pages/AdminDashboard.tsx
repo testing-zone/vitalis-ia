@@ -3,9 +3,28 @@ import Footer from '@/components/Footer';
 import Sidebar from '@/components/Sidebar';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { useUsers } from '@/hooks/useUsers';
+import { useUserActivity } from '@/hooks/useUserActivity';
 
 const AdminDashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { users, loading: usersLoading } = useUsers();
+  const { activities, loading: activitiesLoading } = useUserActivity();
+
+  // Agrupar actividades por usuario para el top de usuarios activos
+  const userActivityCount = activities.reduce((acc, activity) => {
+    acc[activity.user_id] = (acc[activity.user_id] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Ordenar usuarios por actividad
+  const topUsers = users
+    .map(user => ({
+      ...user,
+      activityCount: userActivityCount[user.id] || 0
+    }))
+    .sort((a, b) => b.activityCount - a.activityCount)
+    .slice(0, 5);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
@@ -86,24 +105,22 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b">
-                        <td className="py-2 px-4">Ana López</td>
-                        <td className="py-2 px-4">ana@email.com</td>
-                        <td className="py-2 px-4">Usuario</td>
-                        <td className="py-2 px-4">2024-06-01</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 px-4">Carlos Ruiz</td>
-                        <td className="py-2 px-4">carlos@email.com</td>
-                        <td className="py-2 px-4">Admin</td>
-                        <td className="py-2 px-4">2024-05-30</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-4">María Pérez</td>
-                        <td className="py-2 px-4">maria@email.com</td>
-                        <td className="py-2 px-4">Usuario</td>
-                        <td className="py-2 px-4">2024-05-28</td>
-                      </tr>
+                      {usersLoading ? (
+                        <tr>
+                          <td colSpan={4} className="py-4 text-center">Cargando...</td>
+                        </tr>
+                      ) : (
+                        users.map((user) => (
+                          <tr key={user.id} className="border-b">
+                            <td className="py-2 px-4">{user.name}</td>
+                            <td className="py-2 px-4">{user.email}</td>
+                            <td className="py-2 px-4">{user.role}</td>
+                            <td className="py-2 px-4">
+                              {new Date(user.created_at).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -118,25 +135,23 @@ const AdminDashboard = () => {
                       <tr className="text-vitalis-gold">
                         <th className="py-2 px-4">Nombre</th>
                         <th className="py-2 px-4">Email</th>
-                        <th className="py-2 px-4">Sesiones</th>
+                        <th className="py-2 px-4">Actividades</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b">
-                        <td className="py-2 px-4">Ana López</td>
-                        <td className="py-2 px-4">ana@email.com</td>
-                        <td className="py-2 px-4">120</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2 px-4">Carlos Ruiz</td>
-                        <td className="py-2 px-4">carlos@email.com</td>
-                        <td className="py-2 px-4">110</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 px-4">María Pérez</td>
-                        <td className="py-2 px-4">maria@email.com</td>
-                        <td className="py-2 px-4">105</td>
-                      </tr>
+                      {activitiesLoading ? (
+                        <tr>
+                          <td colSpan={3} className="py-4 text-center">Cargando...</td>
+                        </tr>
+                      ) : (
+                        topUsers.map((user) => (
+                          <tr key={user.id} className="border-b">
+                            <td className="py-2 px-4">{user.name}</td>
+                            <td className="py-2 px-4">{user.email}</td>
+                            <td className="py-2 px-4">{user.activityCount}</td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

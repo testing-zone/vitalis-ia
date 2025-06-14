@@ -333,7 +333,7 @@ const Index = () => {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl pointer-events-none" />
                       </div>
                       <div className="space-y-2 px-2">
                         <h3 className="text-base font-semibold text-vitalis-brown dark:text-white group-hover:text-vitalis-gold dark:group-hover:text-yellow-400 transition-colors">
@@ -358,7 +358,7 @@ const Index = () => {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl pointer-events-none" />
                       </div>
                       <div className="space-y-2 px-2">
                         <h3 className="text-base font-semibold text-vitalis-brown dark:text-white group-hover:text-vitalis-gold dark:group-hover:text-yellow-400 transition-colors">
@@ -383,7 +383,7 @@ const Index = () => {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl pointer-events-none" />
                       </div>
                       <div className="space-y-2 px-2">
                         <h3 className="text-base font-semibold text-vitalis-brown dark:text-white group-hover:text-vitalis-gold dark:group-hover:text-yellow-400 transition-colors">
@@ -408,7 +408,7 @@ const Index = () => {
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                           allowFullScreen
                         />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 rounded-2xl pointer-events-none" />
                       </div>
                       <div className="space-y-2 px-2">
                         <h3 className="text-base font-semibold text-vitalis-brown dark:text-white group-hover:text-vitalis-gold dark:group-hover:text-yellow-400 transition-colors">
