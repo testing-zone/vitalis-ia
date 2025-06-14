@@ -14,6 +14,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import AdminDashboard from "./pages/AdminDashboard";
 import Achievements from "./pages/Achievements";
+import Consultorio from "./pages/Consultorio";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/contacts" element={<Contacts />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/achievements" element={<Achievements />} />
+            <Route path="/consultorio" element={<Consultorio />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -11,7 +11,8 @@ import {
   Trophy, 
   Calendar,
   Menu,
-  X
+  X,
+  Stethoscope
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ChatModal from './ChatModal';
@@ -44,7 +45,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
       action: 'openChat'
     },
     { icon: User, label: 'Perfil', path: '/profile', active: location.pathname === '/profile' },
-    { icon: Users, label: 'Amigos', path: '/contacts', active: location.pathname === '/contacts' }
+    { icon: Users, label: 'Amigos', path: '/contacts', active: location.pathname === '/contacts' },
+    { icon: Stethoscope, label: 'Consultorio', path: '/consultorio', active: location.pathname === '/consultorio' }
   ];
 
   const handleNavigationClick = (item: any) => {
