@@ -179,7 +179,7 @@ const Index = () => {
                           <div className="w-3 h-12 bg-gradient-to-b from-joy via-energy to-growth rounded-full animate-pulse-glow" />
                           <div>
                             <h1 className="font-display text-5xl md:text-7xl font-bold text-vitalis-brown dark:text-white leading-tight">
-                              ¡Hola, Alex! 
+                              ¡Hola! 
                               <span className="inline-block animate-wave ml-3 text-6xl">👋</span>
                             </h1>
                             <div className="font-handwritten text-2xl md:text-3xl text-warmth dark:text-yellow-400 mt-2 opacity-80">
