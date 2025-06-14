@@ -196,6 +196,27 @@ const Index = () => {
                   </Card>
                 </div>
 
+                {/* Motivational Quote Section */}
+                <div className="flex items-center justify-between bg-gradient-to-r from-vitalis-cream/30 to-transparent rounded-2xl p-4 md:p-6">
+                  <div className="flex-1 pr-4">
+                    <blockquote className="text-lg md:text-xl font-medium text-vitalis-brown italic leading-relaxed">
+                      "El éxito no es la clave de la felicidad. La felicidad es la clave del éxito."
+                    </blockquote>
+                    <cite className="block text-sm text-vitalis-brown/70 mt-2 not-italic">
+                      — Albert Schweitzer
+                    </cite>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="relative w-16 h-16 md:w-20 md:h-20">
+                      <img
+                        src="/img/te.png"
+                        alt="Momento de reflexión"
+                        className="w-full h-full object-contain opacity-80 hover:opacity-100 transition-opacity duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-vitalis-gold/10 to-transparent rounded-full" />
+                    </div>
+                  </div>
+                </div>
               </div>
               {/* Stats Cards - Updated with real data */}
               <div className="flex flex-col md:flex-row w-full gap-4">
