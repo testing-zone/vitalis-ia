@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Caveat:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+/* Enhanced Design System with Emotional Color Psychology */
 
 @layer base {
   :root {
@@ -19,13 +19,13 @@
     --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 210 40% 96.1%;
+    --muted: 210 40% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 210 40% 96%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -38,47 +38,46 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Enhanced Emotional Color Palette */
+    --joy: 45 100% 65%;
+    --calm: 200 100% 70%;
+    --energy: 15 100% 60%;
+    --growth: 120 60% 50%;
+    --wisdom: 260 60% 65%;
+    --warmth: 25 100% 65%;
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-
     --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
-
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -90,6 +89,11 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -100,8 +104,51 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
   }
+
+  /* Typography Hierarchy */
+  .font-display {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+  }
+
+  .font-heading {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+  }
+
+  .font-body {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .font-handwritten {
+    font-family: 'Caveat', cursive;
+  }
+}
+
+/* Enhanced Color Utilities */
+@layer utilities {
+  .text-joy { color: hsl(var(--joy)); }
+  .text-calm { color: hsl(var(--calm)); }
+  .text-energy { color: hsl(var(--energy)); }
+  .text-growth { color: hsl(var(--growth)); }
+  .text-wisdom { color: hsl(var(--wisdom)); }
+  .text-warmth { color: hsl(var(--warmth)); }
+
+  .bg-joy { background-color: hsl(var(--joy)); }
+  .bg-calm { background-color: hsl(var(--calm)); }
+  .bg-energy { background-color: hsl(var(--energy)); }
+  .bg-growth { background-color: hsl(var(--growth)); }
+  .bg-wisdom { background-color: hsl(var(--wisdom)); }
+  .bg-warmth { background-color: hsl(var(--warmth)); }
+
+  .border-joy { border-color: hsl(var(--joy)); }
+  .border-calm { border-color: hsl(var(--calm)); }
+  .border-energy { border-color: hsl(var(--energy)); }
+  .border-growth { border-color: hsl(var(--growth)); }
+  .border-wisdom { border-color: hsl(var(--wisdom)); }
+  .border-warmth { border-color: hsl(var(--warmth)); }
 }
 
 .glass-effect {
@@ -111,7 +158,7 @@
 }
 
 html {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: "Poppins", "Inter", system-ui, sans-serif;
 }
 
 @layer utilities {
@@ -151,4 +198,185 @@ html {
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: rgba(244, 196, 48, 0.5);
+}
+
+/* Enhanced Animations */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(20deg); }
+  75% { transform: rotate(-10deg); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(244, 196, 48, 0.3);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(244, 196, 48, 0.6);
+    transform: scale(1.02);
+  }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes morphing {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+}
+
+@keyframes text-glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(244, 196, 48, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(244, 196, 48, 0.6), 0 0 30px rgba(244, 196, 48, 0.4); }
+}
+
+.animate-wave {
+  animation: wave 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.animate-morphing {
+  animation: morphing 8s ease-in-out infinite;
+}
+
+.animate-text-glow {
+  animation: text-glow 3s ease-in-out infinite;
+}
+
+/* Enhanced scrollbar styling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Enhanced gradient backgrounds */
+.bg-gradient-mind {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-body {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-soul {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.bg-gradient-social {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.bg-gradient-joy {
+  background: linear-gradient(135deg, #FFD93D 0%, #FF8C42 100%);
+}
+
+.bg-gradient-calm {
+  background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+}
+
+.bg-gradient-energy {
+  background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);
+}
+
+.bg-gradient-growth {
+  background: linear-gradient(135deg, #55efc4 0%, #00b894 100%);
+}
+
+.bg-gradient-wisdom {
+  background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+}
+
+/* Neumorphism Effects */
+.neumorphism {
+  background: #f0f0f0;
+  border-radius: 20px;
+  box-shadow: 
+    20px 20px 60px #d1d1d1,
+    -20px -20px 60px #ffffff;
+}
+
+.neumorphism-inset {
+  background: #f0f0f0;
+  border-radius: 20px;
+  box-shadow: 
+    inset 20px 20px 60px #d1d1d1,
+    inset -20px -20px 60px #ffffff;
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 30px rgba(244, 196, 48, 0.4);
+  transform: scale(1.02);
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced focus states */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-vitalis-gold focus:ring-offset-2 focus:ring-offset-white;
+}
+
+/* Organic shapes */
+.organic-shape {
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+}
+
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
 }
