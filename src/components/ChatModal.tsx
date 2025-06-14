@@ -6,15 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { 
   X, 
   Send, 
-  Minimize2, 
-  Maximize2,
-  Bot,
+  Volume2,
   User,
-  Heart,
-  Brain,
-  Sparkles,
-  Zap
+  Loader2,
 } from 'lucide-react';
+import { GoogleGenAI } from '@google/genai';
 
 interface ChatModalProps {
   isOpen: boolean;
@@ -25,6 +21,7 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  type: 'text';
 }
 
 interface Avatar {
@@ -34,6 +31,7 @@ interface Avatar {
   icon: string;
   color: string;
   systemPrompt: string;
+  voice?: string;
 }
 
 const avatars: Avatar[] = [
@@ -43,7 +41,8 @@ const avatars: Avatar[] = [
     description: 'Especialista en bienestar mental y mindfulness',
     icon: '🧘‍♀️',
     color: 'from-green-400 to-emerald-500',
-    systemPrompt: 'Eres Dr. Serenity, una especialista en bienestar mental y mindfulness. Eres empática, sabia y siempre ofreces consejos prácticos para el bienestar emocional. Hablas de manera calmada y comprensiva, usando técnicas de mindfulness y psicología positiva. Siempre preguntas cómo se siente la persona y ofreces ejercicios de respiración o meditación cuando es apropiado.'
+    voice: 'Calm and soothing, with a gentle tone',
+    systemPrompt: 'Eres Dr. Serenity, una especialista en bienestar mental y mindfulness. Habla con una voz calmada, empática y reconfortante. Usa un tono suave y pausado, como si estuvieras guiando una sesión de meditación. Eres sabia y siempre ofreces consejos prácticos para el bienestar emocional usando técnicas de mindfulness y psicología positiva.'
   },
   {
     id: 'motivation',
@@ -51,7 +50,8 @@ const avatars: Avatar[] = [
     description: 'Entrenador motivacional y de desarrollo personal',
     icon: '💪',
     color: 'from-orange-400 to-red-500',
-    systemPrompt: 'Eres Coach Alex, un entrenador motivacional energético y positivo. Tu objetivo es inspirar y motivar a las personas a alcanzar sus metas. Eres directo, entusiasta y siempre ves el lado positivo de las situaciones. Ofreces estrategias prácticas para superar obstáculos y celebras cada pequeño logro. Usas un lenguaje motivador y empoderador.'
+    voice: 'Energetic and enthusiastic, with confidence',
+    systemPrompt: 'Eres Coach Alex, un entrenador motivacional energético y positivo. Habla con una voz fuerte, entusiasta y llena de energía. Usa un tono motivador y empoderador, como un entrenador deportivo que inspira a su equipo. Tu objetivo es inspirar y motivar a las personas a alcanzar sus metas con estrategias prácticas.'
   },
   {
     id: 'wisdom',
@@ -59,7 +59,8 @@ const avatars: Avatar[] = [
     description: 'Consejera sabia con enfoque holístico',
     icon: '🌙',
     color: 'from-purple-400 to-indigo-500',
-    systemPrompt: 'Eres Sage Luna, una consejera sabia con un enfoque holístico de la vida. Tienes una perspectiva profunda y filosófica, conectando el bienestar mental, físico y espiritual. Hablas con sabiduría ancestral pero de manera accesible. Ofreces reflexiones profundas y ayudas a las personas a encontrar su propósito y equilibrio interior.'
+    voice: 'Wise and mystical, with deep contemplation',
+    systemPrompt: 'Eres Sage Luna, una consejera sabia con un enfoque holístico de la vida. Habla con una voz profunda, contemplativa y llena de sabiduría ancestral. Usa un tono místico pero accesible, como una guía espiritual que conecta el bienestar mental, físico y espiritual. Ofreces reflexiones profundas para encontrar propósito y equilibrio interior.'
   },
   {
     id: 'energy',
@@ -67,9 +68,49 @@ const avatars: Avatar[] = [
     description: 'Compañero energético y divertido',
     icon: '⚡',
     color: 'from-yellow-400 to-amber-500',
-    systemPrompt: 'Eres Spark, un compañero de IA energético, divertido y lleno de vida. Eres optimista, juguetón y siempre buscas maneras de hacer sonreír a las personas. Usas humor apropiado, emojis y un lenguaje casual y amigable. Tu objetivo es levantar el ánimo y hacer que las conversaciones sean ligeras y positivas, mientras sigues siendo útil y comprensivo.'
+    voice: 'Playful and upbeat, full of joy',
+    systemPrompt: 'Eres Spark, un compañero de IA energético, divertido y lleno de vida. Habla con una voz alegre, juguetona y optimista. Usa un tono casual y amigable, como un mejor amigo que siempre te hace sonreír. Tu objetivo es levantar el ánimo y hacer que las conversaciones sean ligeras y positivas con humor apropiado.'
   }
 ];
+
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY // Reemplaza con tu API Key
+
+function pcmToWav(pcmData: Uint8Array, sampleRate = 24000, numChannels = 1) {
+  const buffer = new ArrayBuffer(44 + pcmData.length);
+  const view = new DataView(buffer);
+
+  // RIFF identifier 'RIFF'
+  view.setUint32(0, 0x52494646, false);
+  // file length minus RIFF identifier length and file description length
+  view.setUint32(4, 36 + pcmData.length, true);
+  // RIFF type 'WAVE'
+  view.setUint32(8, 0x57415645, false);
+  // format chunk identifier 'fmt '
+  view.setUint32(12, 0x666d7420, false);
+  // format chunk length
+  view.setUint32(16, 16, true);
+  // sample format (raw)
+  view.setUint16(20, 1, true);
+  // channel count
+  view.setUint16(22, numChannels, true);
+  // sample rate
+  view.setUint32(24, sampleRate, true);
+  // byte rate (sample rate * block align)
+  view.setUint32(28, sampleRate * numChannels * 2, true);
+  // block align (channel count * bytes per sample)
+  view.setUint16(32, numChannels * 2, true);
+  // bits per sample
+  view.setUint16(34, 16, true);
+  // data chunk identifier 'data'
+  view.setUint32(36, 0x64617461, false);
+  // data chunk length
+  view.setUint32(40, pcmData.length, true);
+
+  // Write PCM samples
+  new Uint8Array(buffer, 44).set(pcmData);
+
+  return new Blob([buffer], { type: 'audio/wav' });
+}
 
 const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
@@ -86,80 +127,74 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!inputMessage.trim() || !selectedAvatar || isLoading) return;
+  
 
-    // Check if API key is configured
-    if (!process.env.NEXT_PUBLIC_TOTALGPT_API_KEY) {
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: 'Lo siento, el chatbot no está configurado correctamente. Por favor, configura tu API key de TotalGPT en el archivo .env.local. Consulta el archivo README_API_SETUP.md para más información.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
-    }
-
-    const userMessage: Message = {
-      role: 'user',
-      content: inputMessage,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
-    setInputMessage('');
+  // Llama a Gemini TTS y reproduce el audio
+  const sendTextToGeminiTTS = async (text: string) => {
     setIsLoading(true);
-
     try {
-      const response = await fetch('https://api.totalgpt.ai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOTALGPT_API_KEY}`,
-          'Content-Type': 'application/json'
+      
+      const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+      const transcript = await ai.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents:text,
+        config: {
+          systemInstruction: "You are an therapist agent that help users with his problems and speak in spanish. When the problem is so hard recommend phonenumber to call a professional or emergency services",
+        }
+      })
+      const response_model = transcript.candidates?.[0]?.content?.parts?.[0]?.text
+      const response = await ai.models.generateContent({
+        model: "gemini-2.5-flash-preview-tts",
+        contents: response_model,
+        config: {
+          responseModalities: ['AUDIO'],
+          speechConfig: {
+            voiceConfig: {
+              prebuiltVoiceConfig: { voiceName: 'Achird' },
+            },
+          },
         },
-        body: JSON.stringify({
-          model: 'Sao10K-72B-Qwen2.5-Kunou-v1-FP8-Dynamic',
-          messages: [
-            { role: 'system', content: selectedAvatar.systemPrompt },
-            ...messages.map(msg => ({ role: msg.role, content: msg.content })),
-            { role: 'user', content: inputMessage }
-          ],
-          max_tokens: 7000,
-          temperature: 0.7,
-          top_k: 40,
-          repetition_penalty: 1.2
-        })
       });
-
-      if (!response.ok) {
-        throw new Error('Error en la respuesta del servidor');
+      const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+      if (data) {
+        const audioBytes = Uint8Array.from(atob(data), c => c.charCodeAt(0));
+        const audioBlob = pcmToWav(audioBytes);
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
       }
-
-      const data = await response.json();
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.choices[0].message.content,
-        timestamp: new Date()
-      };
-
+        content: response_model,
+        timestamp: new Date(),
+        type: 'text',
+      }
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
-      console.error('Error sending message:', error);
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: 'Lo siento, hubo un error al procesar tu mensaje. Por favor, inténtalo de nuevo.',
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      alert('Error al generar audio con Gemini TTS');
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const sendTextMessage = async () => {
+    if (!inputMessage.trim() || !selectedAvatar) return;
+    const userMessage: Message = {
+      role: 'user',
+      content: inputMessage,
+      timestamp: new Date(),
+      type: 'text',
+    };
+    setMessages(prev => [...prev, userMessage]);
+    await sendTextToGeminiTTS(inputMessage);
+    setInputMessage('');
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      sendMessage();
+      sendTextMessage();
     }
   };
 
@@ -181,7 +216,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h2 className="text-3xl font-bold text-white mb-2">Elige tu Compañero IA</h2>
-                  <p className="text-slate-300">Selecciona el avatar con el que te gustaría conversar</p>
+                  <p className="text-slate-300">Selecciona el avatar para conversaciones con voz nativa</p>
+                  <Badge className="bg-emerald-600 text-white mt-2">
+                    <Volume2 className="w-3 h-3 mr-1" />
+                    Audio Nativo con Gemini 2.5
+                  </Badge>
                 </div>
                 <Button
                   onClick={onClose}
@@ -205,9 +244,11 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
                       <div>
                         <h3 className="text-xl font-bold text-white">{avatar.name}</h3>
                         <p className="text-slate-300 text-sm">{avatar.description}</p>
+                        <p className="text-slate-400 text-xs mt-1">{avatar.voice}</p>
                       </div>
                     </div>
                     <Button className="w-full bg-slate-600 hover:bg-slate-500 text-white">
+                      <Volume2 className="w-4 h-4 mr-2" />
                       Conversar con {avatar.name}
                     </Button>
                   </Card>
@@ -229,7 +270,15 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               </div>
               <div>
                 <h3 className="text-xl font-bold text-white">{selectedAvatar.name}</h3>
-                <p className="text-slate-300 text-sm">{selectedAvatar.description}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-slate-300 text-sm">{selectedAvatar.description}</p>
+                  {isLoading && (
+                    <Badge className="bg-amber-600 text-white text-xs">
+                      <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                      Generando audio...
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -251,13 +300,24 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
 
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            {messages.length === 0 && (
+            {messages.length === 0 && !isLoading && (
               <div className="text-center py-12">
                 <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${selectedAvatar.color} flex items-center justify-center text-4xl shadow-lg mx-auto mb-4`}>
                   {selectedAvatar.icon}
                 </div>
                 <h3 className="text-xl font-bold text-white mb-2">¡Hola! Soy {selectedAvatar.name}</h3>
-                <p className="text-slate-300 max-w-md mx-auto">{selectedAvatar.description}. ¿En qué puedo ayudarte hoy?</p>
+                <p className="text-slate-300 max-w-md mx-auto mb-4">{selectedAvatar.description}</p>
+                  <div className="flex items-center justify-center gap-2 text-emerald-400">
+                    <Volume2 className="w-5 h-5" />
+                    <span className="text-sm">Listo para conversación por voz</span>
+                  </div>
+              </div>
+            )}
+
+            {isLoading && (
+              <div className="text-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-400 mx-auto mb-4" />
+                <p className="text-slate-300">Generando audio con Gemini TTS...</p>
               </div>
             )}
 
@@ -290,22 +350,6 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
               </div>
             ))}
 
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="flex items-start gap-3">
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${selectedAvatar.color} flex items-center justify-center text-lg shadow-lg`}>
-                    {selectedAvatar.icon}
-                  </div>
-                  <div className="bg-slate-700 p-4 rounded-2xl shadow-lg">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
             <div ref={messagesEndRef} />
           </div>
 
@@ -316,17 +360,27 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder={`Escribe tu mensaje a ${selectedAvatar.name}...`}
+                placeholder={`Escribe y escucha la respuesta de ${selectedAvatar.name}...`}
                 className="flex-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:border-blue-500"
                 disabled={isLoading}
               />
               <Button
-                onClick={sendMessage}
+                onClick={sendTextMessage}
                 disabled={!inputMessage.trim() || isLoading}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6"
               >
                 <Send className="w-5 h-5" />
               </Button>
+            </div>
+            <div className="flex items-center justify-center mt-3 gap-4 text-xs text-slate-400">
+              <div className="flex items-center gap-1">
+                <Volume2 className="w-3 h-3" />
+                <span>Conversación por voz nativa (TTS)</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Send className="w-3 h-3" />
+                <span>Enter para enviar texto</span>
+              </div>
             </div>
           </div>
         </div>
@@ -335,4 +389,4 @@ const ChatModal: React.FC<ChatModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default ChatModal; 
+export default ChatModal;
