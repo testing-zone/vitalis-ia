@@ -44,8 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onToggle, onOpenJourneyMap, o
       action: 'openChat'
     },
     { icon: User, label: 'Perfil', path: '/profile', active: location.pathname === '/profile' },
-    { icon: Users, label: 'Amigos', path: '/contacts', active: location.pathname === '/contacts' },
-    { icon: Trophy, label: 'Logros', path: '/achievements', active: location.pathname === '/achievements' }
+    { icon: Users, label: 'Amigos', path: '/contacts', active: location.pathname === '/contacts' }
   ];
 
   const handleNavigationClick = (item: any) => {
