@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Sidebar from '@/components/Sidebar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,11 +9,15 @@ import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
 import { Edit, Trophy, Target, Calendar, Star, User, Settings, Shield, Bell, Palette, HelpCircle, BookOpen, Plus, Save, Trash2, Archive, ArrowLeft, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Edit3, MapPin, Zap, Users, Heart, TrendingUp, Camera, MessageCircle, Share2, MoreHorizontal, ArrowUpRight, X, Award, Flame, CheckCircle } from 'lucide-react';
 
 const Profile = () => {
-  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [editingSection, setEditingSection] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [books, setBooks] = useState([
     { id: 1, title: 'Mi Diario Personal', content: 'Hoy fue un día increíble...', lastModified: new Date(), archived: false },
     { id: 2, title: 'Reflexiones de Vida', content: 'La vida es como un río...', lastModified: new Date(), archived: false }
@@ -594,50 +598,14 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-vitalis-cream via-white to-vitalis-green-light/10">
-      <Header />
+      <Sidebar 
+        isOpen={sidebarOpen} 
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+        onOpenJourneyMap={() => {}}
+      />
       
-      <div className="flex">
-        {/* Static Sidebar */}
-        <div className="w-80 min-h-screen bg-white border-r border-vitalis-gold/20 p-6">
-          <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-2xl font-bold text-vitalis-brown mb-2">Mi Cuenta</h2>
-                <p className="text-vitalis-brown/70">Gestiona tu perfil y configuración</p>
-              </div>
-              <Button
-                onClick={() => navigate('/')}
-                className="bg-vitalis-green hover:bg-vitalis-green-dark text-white rounded-full w-10 h-10 p-0"
-                title="Volver al inicio"
-              >
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </div>
-          </div>
-          
-          <nav className="space-y-2">
-            {sidebarItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-all duration-200 ${
-                    activeSection === item.id
-                      ? 'bg-vitalis-gold text-white shadow-lg transform scale-105'
-                      : 'text-vitalis-brown hover:bg-vitalis-gold/10 hover:transform hover:scale-102'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* Dynamic Content Area */}
-        <div className="flex-1 p-6">
+      <div className="md:ml-80 transition-all duration-300">
+        <div className="max-w-6xl mx-auto px-4 py-6">
           {renderContent()}
         </div>
       </div>

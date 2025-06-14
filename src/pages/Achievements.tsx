@@ -19,7 +19,6 @@ import {
   X
 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
-import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 interface Achievement {
@@ -220,8 +219,6 @@ const Achievements: React.FC = () => {
       
       {/* Main content with sidebar offset */}
       <div className="md:ml-80 transition-all duration-300">
-        <Header />
-        
         <main className="max-w-6xl mx-auto px-4 py-8">
           {/* Header Section */}
           <div className="text-center mb-8">
