@@ -13,19 +13,8 @@ import {
   Clock,
   Zap
 } from 'lucide-react';
-
-interface Activity {
-  id: number;
-  title: string;
-  description: string;
-  icon: string;
-  theme: 'morning' | 'exercise' | 'meditation' | 'social' | 'reflection' | 'evening';
-  completed: boolean;
-  locked: boolean;
-  xp: number;
-  day: number;
-  position: { x: number; y: number };
-}
+import ActivityModal from './activities/ActivityModal';
+import { useJourneyActivities, JourneyActivity } from '@/hooks/useJourneyActivities';
 
 interface JourneyMapViewProps {
   isOpen: boolean;
@@ -34,9 +23,13 @@ interface JourneyMapViewProps {
 
 const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
   const [selectedWeek, setSelectedWeek] = useState(1);
-  const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<JourneyActivity | null>(null);
   const [animationOffset, setAnimationOffset] = useState(0);
   const [windOffset, setWindOffset] = useState(0);
+  const [activityModalOpen, setActivityModalOpen] = useState(false);
+
+  // Use the journey activities hook
+  const { activities, completeActivity } = useJourneyActivities();
 
   // Animate grass movement and wind effects
   useEffect(() => {
@@ -99,142 +92,47 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
     };
   }, []);
 
-  const journeyData: Activity[] = [
-    { 
-      id: 1, 
-      title: 'Check-in Matutino', 
-      description: 'Comienza tu día conectando contigo mismo',
-      icon: 'sunrise', 
-      theme: 'morning',
-      completed: true, 
-      locked: false, 
-      xp: 50, 
-      day: 1,
-      position: { x: 15, y: 80 }
-    },
-    { 
-      id: 2, 
-      title: 'Respiración Consciente', 
-      description: 'Técnicas de respiración para la calma interior',
-      icon: 'breath', 
-      theme: 'meditation',
-      completed: true, 
-      locked: false, 
-      xp: 75, 
-      day: 1,
-      position: { x: 25, y: 60 }
-    },
-    { 
-      id: 3, 
-      title: 'Ejercicio Suave', 
-      description: 'Movimiento consciente para tu bienestar',
-      icon: 'exercise', 
-      theme: 'exercise',
-      completed: false, 
-      locked: false, 
-      xp: 100, 
-      day: 2,
-      position: { x: 40, y: 45 }
-    },
-    { 
-      id: 4, 
-      title: 'Diario de Gratitud', 
-      description: 'Reflexiona sobre las cosas positivas del día',
-      icon: 'journal', 
-      theme: 'reflection',
-      completed: false, 
-      locked: false, 
-      xp: 60, 
-      day: 2,
-      position: { x: 55, y: 30 }
-    },
-    { 
-      id: 5, 
-      title: 'Conexión Social', 
-      description: 'Comparte momentos significativos con otros',
-      icon: 'social', 
-      theme: 'social',
-      completed: false, 
-      locked: true, 
-      xp: 80, 
-      day: 3,
-      position: { x: 70, y: 50 }
-    },
-    { 
-      id: 6, 
-      title: 'Onsen Mental', 
-      description: 'Sumérgete en la relajación profunda',
-      icon: 'onsen', 
-      theme: 'meditation',
-      completed: false, 
-      locked: true, 
-      xp: 120, 
-      day: 3,
-      position: { x: 85, y: 35 }
-    }
-  ];
-
-  const getThemeStyles = (theme: Activity['theme'], completed: boolean, locked: boolean) => {
+  const getThemeStyles = (theme: JourneyActivity['theme'], completed: boolean, locked: boolean) => {
     const themes = {
       morning: {
-        bg: 'bg-gradient-to-br from-amber-200 via-orange-200 to-yellow-300',
-        border: 'border-amber-400',
-        shadow: 'shadow-amber-300/50',
-        glow: 'shadow-amber-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-amber-200 via-orange-200 to-yellow-300',
+        border: completed ? 'border-gray-500' : 'border-amber-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-amber-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-amber-400/50'
       },
       exercise: {
-        bg: 'bg-gradient-to-br from-emerald-200 via-teal-200 to-green-300',
-        border: 'border-emerald-400',
-        shadow: 'shadow-emerald-300/50',
-        glow: 'shadow-emerald-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-emerald-200 via-teal-200 to-green-300',
+        border: completed ? 'border-gray-500' : 'border-emerald-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-emerald-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-emerald-400/50'
       },
       meditation: {
-        bg: 'bg-gradient-to-br from-violet-200 via-purple-200 to-indigo-300',
-        border: 'border-violet-400',
-        shadow: 'shadow-violet-300/50',
-        glow: 'shadow-violet-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-violet-200 via-purple-200 to-indigo-300',
+        border: completed ? 'border-gray-500' : 'border-violet-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-violet-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-violet-400/50'
       },
       social: {
-        bg: 'bg-gradient-to-br from-rose-200 via-pink-200 to-fuchsia-300',
-        border: 'border-rose-400',
-        shadow: 'shadow-rose-300/50',
-        glow: 'shadow-rose-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-rose-200 via-pink-200 to-fuchsia-300',
+        border: completed ? 'border-gray-500' : 'border-rose-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-rose-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-rose-400/50'
       },
       reflection: {
-        bg: 'bg-gradient-to-br from-sky-200 via-blue-200 to-cyan-300',
-        border: 'border-sky-400',
-        shadow: 'shadow-sky-300/50',
-        glow: 'shadow-sky-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-blue-200 via-cyan-200 to-sky-300',
+        border: completed ? 'border-gray-500' : 'border-blue-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-blue-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-blue-400/50'
       },
       evening: {
-        bg: 'bg-gradient-to-br from-indigo-200 via-purple-200 to-violet-300',
-        border: 'border-indigo-400',
-        shadow: 'shadow-indigo-300/50',
-        glow: 'shadow-indigo-400/50'
+        bg: completed ? 'bg-gray-400' : 'bg-gradient-to-br from-indigo-300 via-purple-300 to-slate-400',
+        border: completed ? 'border-gray-500' : 'border-indigo-400',
+        shadow: completed ? 'shadow-gray-300/50' : 'shadow-indigo-300/50',
+        glow: completed ? 'shadow-gray-400/50' : 'shadow-indigo-400/50'
       }
     };
 
-    const themeStyle = themes[theme];
-    
-    if (locked) {
-      return {
-        bg: 'bg-gradient-to-br from-gray-200 via-slate-200 to-gray-300',
-        border: 'border-gray-400',
-        shadow: 'shadow-gray-300/50',
-        glow: 'shadow-gray-400/30'
-      };
-    }
-    
-    if (completed) {
-      return {
-        bg: 'bg-gradient-to-br from-emerald-300 via-green-300 to-teal-300',
-        border: 'border-emerald-500',
-        shadow: 'shadow-emerald-400/50',
-        glow: 'shadow-emerald-500/70'
-      };
-    }
-
-    return themeStyle;
+    return themes[theme];
   };
 
   const getActivityIcon = (iconType: string, completed: boolean, locked: boolean) => {
@@ -310,10 +208,22 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleActivityClick = (activity: Activity) => {
+  const handleActivityClick = (activity: JourneyActivity) => {
     if (!activity.locked) {
       setSelectedActivity(activity);
+      setActivityModalOpen(true);
     }
+  };
+
+  const handleActivityComplete = (xp: number, badge?: string) => {
+    // Mark activity as completed using the hook
+    if (selectedActivity) {
+      completeActivity(selectedActivity.id);
+      console.log(`Activity ${selectedActivity.id} completed! +${xp} XP`, badge ? `Badge earned: ${badge}` : '');
+    }
+    
+    setActivityModalOpen(false);
+    setSelectedActivity(null);
   };
 
   if (!isOpen) return null;
@@ -534,7 +444,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
               <CheckCircle className="w-5 h-5 text-emerald-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Completadas</p>
-                <p className="font-bold text-white text-sm">2/6</p>
+                <p className="font-bold text-white text-sm">{activities.filter(a => a.completed).length}/{activities.length}</p>
               </div>
             </div>
           </Card>
@@ -544,7 +454,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
               <Zap className="w-5 h-5 text-amber-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">XP Total</p>
-                <p className="font-bold text-white text-sm">125</p>
+                <p className="font-bold text-white text-sm">{activities.filter(a => a.completed).reduce((sum, a) => sum + a.xp, 0)}</p>
               </div>
             </div>
           </Card>
@@ -554,7 +464,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
               <Calendar className="w-5 h-5 text-sky-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Día Actual</p>
-                <p className="font-bold text-white text-sm">2</p>
+                <p className="font-bold text-white text-sm">{Math.max(...activities.filter(a => a.completed).map(a => a.day), 1)}</p>
               </div>
             </div>
           </Card>
@@ -564,7 +474,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
               <Trophy className="w-5 h-5 text-yellow-400" />
               <div className="text-center">
                 <p className="text-xs text-blue-200 font-medium">Racha</p>
-                <p className="font-bold text-white text-sm">2 días</p>
+                <p className="font-bold text-white text-sm">{activities.filter(a => a.completed).length} días</p>
               </div>
             </div>
           </Card>
@@ -602,7 +512,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
             
             {/* Ethereal path background */}
             <path
-              d={`M ${journeyData[0]?.position.x}% ${journeyData[0]?.position.y}% ${journeyData.map(activity => 
+              d={`M ${activities[0]?.position.x}% ${activities[0]?.position.y}% ${activities.map(activity => 
                 `L ${activity.position.x}% ${activity.position.y}%`
               ).join('')}`}
               stroke="rgba(148, 163, 184, 0.3)"
@@ -614,7 +524,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
             
             {/* Main stellar path */}
             <path
-              d={`M ${journeyData[0]?.position.x}% ${journeyData[0]?.position.y}% ${journeyData.map(activity => 
+              d={`M ${activities[0]?.position.x}% ${activities[0]?.position.y}% ${activities.map(activity => 
                 `L ${activity.position.x}% ${activity.position.y}%`
               ).join('')}`}
               stroke="url(#pathGradient)"
@@ -631,7 +541,7 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
           </svg>
 
           {/* Activity Stops with starry night styling */}
-          {journeyData.map((activity, index) => {
+          {activities.map((activity, index) => {
             const themeStyles = getThemeStyles(activity.theme, activity.completed, activity.locked);
             const pulseDelay = index * 0.7;
             
@@ -735,60 +645,16 @@ const JourneyMapView: React.FC<JourneyMapViewProps> = ({ isOpen, onClose }) => {
         </div>
       </div>
 
-      {/* Enhanced Activity Detail Modal */}
-      {selectedActivity && (
-        <div className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-          <Card className="w-full max-w-md bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 rounded-3xl shadow-2xl animate-in slide-in-from-bottom-4 duration-500 border-2 border-slate-600/50">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-slate-600 via-slate-500 to-slate-600 flex items-center justify-center text-4xl shadow-2xl border-4 border-slate-400 backdrop-blur-sm">
-                    {getActivityIcon(selectedActivity.icon, selectedActivity.completed, selectedActivity.locked)}
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-blue-200 text-xl">{selectedActivity.title}</h3>
-                    <p className="text-sm text-slate-300">Día {selectedActivity.day}</p>
-                  </div>
-                </div>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => setSelectedActivity(null)}
-                  className="rounded-full hover:bg-red-900/30 transition-all duration-200 hover:scale-110 text-slate-300 hover:text-red-300"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-
-              <p className="text-slate-300 mb-6 leading-relaxed">{selectedActivity.description}</p>
-
-              <div className="flex items-center justify-between mb-6 p-4 bg-gradient-to-r from-slate-700/50 via-slate-600/50 to-slate-700/50 rounded-2xl border border-slate-500/50">
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-5 h-5 text-amber-400" />
-                    <span className="font-bold text-blue-200">{selectedActivity.xp} XP</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-slate-400" />
-                    <span className="text-sm text-slate-300">15-20 min</span>
-                  </div>
-                </div>
-              </div>
-
-              <Button 
-                className="w-full bg-gradient-to-r from-slate-600 via-slate-500 to-slate-600 hover:from-slate-500 hover:via-slate-400 hover:to-slate-500 text-blue-200 rounded-2xl py-4 transition-all duration-300 hover:scale-105 hover:shadow-lg border border-slate-400/50"
-                onClick={() => {
-                  console.log(`Iniciando actividad: ${selectedActivity.title}`);
-                  setSelectedActivity(null);
-                }}
-              >
-                <Play className="w-5 h-5 mr-2" />
-                Comenzar Actividad
-              </Button>
-            </div>
-          </Card>
-        </div>
-      )}
+      {/* Activity Modal */}
+      <ActivityModal
+        isOpen={activityModalOpen}
+        onClose={() => {
+          setActivityModalOpen(false);
+          setSelectedActivity(null);
+        }}
+        activityId={selectedActivity?.id || 0}
+        onComplete={handleActivityComplete}
+      />
     </div>
   );
 };

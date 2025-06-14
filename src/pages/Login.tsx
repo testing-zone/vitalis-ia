@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -121,9 +120,12 @@ const Login = () => {
           <div className="mt-8 text-center">
             <p className="text-vitalis-brown/70">
               ¿No tienes cuenta?{' '}
-              <a href="#" className="text-vitalis-green hover:text-vitalis-green-dark font-medium">
+              <button 
+                onClick={() => navigate('/register')}
+                className="text-vitalis-green hover:text-vitalis-green-dark font-medium underline"
+              >
                 Regístrate aquí
-              </a>
+              </button>
             </p>
           </div>
         </Card>
